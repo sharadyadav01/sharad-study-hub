@@ -8,41 +8,32 @@
 body{
     margin:0;
     font-family: Arial, sans-serif;
-    background:#f4f6f9;
+    background:linear-gradient(to right,#eef2f3,#dfe9f3);
+    text-align:center;
 }
 
 header{
-    background:#2c3e50;
+    background:#1e2a38;
     color:white;
-    padding:20px;
-    text-align:center;
+    padding:25px;
 }
 
-nav{
-    background:#34495e;
-    padding:10px;
-    text-align:center;
+.container{
+    margin-top:40px;
 }
 
-nav a{
-    color:white;
-    text-decoration:none;
-    margin:15px;
-    font-weight:bold;
-}
-
-section{
-    padding:40px 20px;
-}
-
-.card{
+.subject-card{
     background:white;
-    padding:20px;
-    margin:15px auto;
-    width:90%;
-    max-width:600px;
+    width:80%;
+    max-width:400px;
+    margin:20px auto;
+    padding:25px;
     border-radius:10px;
     box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+a{
+    text-decoration:none;
 }
 
 button{
@@ -57,13 +48,6 @@ button{
 button:hover{
     background:#2980b9;
 }
-
-footer{
-    background:#2c3e50;
-    color:white;
-    text-align:center;
-    padding:15px;
-}
 </style>
 </head>
 
@@ -71,75 +55,40 @@ footer{
 
 <header>
     <h1>📚 Sharad Study Hub</h1>
-    <p>GEOGRAPHY | HISTORY | POLITY</p>
+    <p>SSC CGL | BA Geography</p>
 </header>
 
-<nav>
-    <a href="#geo">Geography</a>
-    <a href="#his">History</a>
-    <a href="#ssc">Polity</a>
-    <a href="#eco">Economics</a>
-</nav>
+<div class="container">
 
-<section id="geo">
-    <h2>🌍 Geography Notes</h2>
+<div class="subject-card">
+    <h2>🌍 Geography</h2>
+    <a href="geography.html">
+        <button>Open</button>
+    </a>
+</div>
 
-    <div class="card">
-        <h3>Physical Geography - Chapter 1</h3>
-        <p>Introduction to Physical Geography</p>
-        <a href="BEGAE-182 2023-24@.pdf" download>
-            <button>Download PDF</button>
-        </a>
-    </div>
+<div class="subject-card">
+    <h2>🏛 History</h2>
+    <a href="history.html">
+        <button>Open</button>
+    </a>
+</div>
 
-    <div class="card">
-        <h3>Climatology Notes</h3>
-        <p>Climate and Weather Concepts</p>
-        <a href="BEGC 102 European Classical Literature July 23-Jan24.pdf" download>
-            <button>Download PDF</button>
-        </a>
-    </div>
-</section>
+<div class="subject-card">
+    <h2>🎯 Polity</h2>
+    <a href="polity.html">
+        <button>Open</button>
+    </a>
+</div>
 
-<section id="his">
-    <h2>🏛 History Notes</h2>
+<div class="subject-card">
+    <h2>📈 Economics</h2>
+    <a href="economics.html">
+        <button>Open</button>
+    </a>
+</div>
 
-    <div class="card">
-        <h3>Ancient History</h3>
-        <p>Indus Valley Civilization</p>
-        <a href="Assignment BEGC 103_July 2023-Jan 2024 sessions.pdf" download>
-            <button>Download PDF</button>
-        </a>
-    </div>
-</section>
-
-<section id="ssc">
-    <h2>🎯 Polity notes</h2>
-
-    <div class="card">
-        <h3>Indian Polity</h3>
-        <p>Important Articles and Amendments</p>
-        <a href="BEGAE-182 2023-24@.pdf" download>
-            <button>Download PDF</button>
-        </a>
-    </div>
-</section>
-
-<section id="eco">
-    <h2>📚 Economic notes</h2>
-
-    <div class="card">
-        <h3>Indian economics</h3>
-        <p>banking and economics</p>
-        <a href="BEGAE-182 2023-24@.pdf" download>
-            <button>Download PDF</button>
-        </a>
-    </div>
-</section>
-
-<footer>
-    © 2026 Sharad Study Hub | All Rights Reserved
-</footer>
+</div>
 
 </body>
 </html>
