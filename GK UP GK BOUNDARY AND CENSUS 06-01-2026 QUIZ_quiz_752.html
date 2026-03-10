@@ -1,0 +1,2396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>General Quiz -  - Fixed Navigation</title>
+<style>
+:root {
+  --primary-color: #007bff;
+  --primary-hover: #0069d9;
+  --success-color: #28a745;
+  --success-hover: #218838;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --secondary-color: #6c757d;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --border-color: #dee2e6;
+  --shadow: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
+  --overlay: rgba(0,0,0,0.5);
+  --nav-height: 80px;
+}
+
+[data-theme="dark"] {
+  --primary-color: #4dabf7;
+  --primary-hover: #339af0;
+  --success-color: #51cf66;
+  --success-hover: #40c057;
+  --danger-color: #ff6b6b;
+  --warning-color: #ffd43b;
+  --secondary-color: #868e96;
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #404040;
+  --text-primary: #f8f9fa;
+  --text-secondary: #adb5bd;
+  --border-color: #495057;
+  --shadow: 0 4px 6px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.4);
+  --overlay: rgba(0,0,0,0.7);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
+  position: relative;
+  padding-bottom: var(--nav-height);
+}
+
+body.palette-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-primary);
+  padding: 20px 30px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.header h1 {
+  font-size: 28px;
+  color: var(--primary-color);
+  font-weight: 700;
+  user-select: none;
+}
+
+.header-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.theme-toggle, .fullscreen-btn {
+  background: var(--bg-tertiary);
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.3s;
+  min-width: 44px;
+  min-height: 44px;
+  user-select: none;
+}
+
+.theme-toggle:active, .fullscreen-btn:active {
+  transform: scale(0.95);
+}
+
+.theme-toggle:hover, .fullscreen-btn:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+.timer {
+  background: var(--warning-color);
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 18px;
+  min-width: 100px;
+  text-align: center;
+  user-select: none;
+}
+
+.timer.warning {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.palette-fab {
+  position: fixed;
+  bottom: calc(var(--nav-height) + 20px);
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  box-shadow: 0 6px 20px rgba(0,123,255,0.4);
+  transition: all 0.3s ease;
+  z-index: 998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.palette-fab:active {
+  transform: scale(0.9);
+}
+
+.palette-fab:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0,123,255,0.6);
+}
+
+.palette-fab.active {
+  background: var(--danger-color);
+}
+
+.palette-fab .badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--success-color);
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg-secondary);
+  pointer-events: none;
+}
+.solution-section {
+  margin-top: 20px;
+  padding: 15px;
+  background: #e7f3ff;
+  border-left: 4px solid var(--primary-color);
+  border-radius: 8px;
+}
+
+.solution-label {
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.solution-content {
+  line-height: 1.6;
+  color: #333;
+}
+
+.solution-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+.palette-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--overlay);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 999;
+  touch-action: none;
+}
+
+.palette-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.question-palette {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  max-width: 450px;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--bg-primary);
+  box-shadow: -5px 0 20px rgba(0,0,0,0.2);
+  transition: right 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.question-palette.active {
+  right: 0;
+}
+
+.palette-header {
+  padding: 20px;
+  background: var(--primary-color);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.palette-header h3 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.palette-close {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 32px;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.2s;
+  line-height: 1;
+  touch-action: manipulation;
+}
+
+.palette-close:active {
+  transform: scale(0.9);
+}
+
+.palette-close:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.palette-stats {
+  padding: 15px 20px;
+  background: var(--bg-tertiary);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  font-size: 13px;
+  text-align: center;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border-color);
+  user-select: none;
+}
+
+.palette-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.palette-stat .number {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.palette-stat.answered .number { color: var(--success-color); }
+.palette-stat.unanswered .number { color: var(--secondary-color); }
+.palette-stat.bookmarked .number { color: var(--warning-color); }
+
+.palette-search {
+  padding: 15px 20px;
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+.palette-search input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.palette-search input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.palette-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+}
+
+.palette-btn {
+  aspect-ratio: 1;
+  border: 2px solid var(--border-color);
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+  min-width: 40px;
+  min-height: 40px;
+  color: var(--text-primary);
+  position: relative;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.palette-btn:active {
+  transform: scale(0.9);
+}
+
+.palette-btn:hover {
+  transform: scale(1.1);
+  z-index: 10;
+  box-shadow: var(--shadow);
+}
+
+.palette-btn.current {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  animation: currentPulse 2s infinite;
+}
+
+@keyframes currentPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,123,255,0.7); }
+  50% { box-shadow: 0 0 0 8px rgba(0,123,255,0); }
+}
+
+.palette-btn.answered {
+  background: var(--success-color);
+  color: white;
+  border-color: var(--success-color);
+}
+
+.palette-btn.bookmarked::after {
+  content: '🔖';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.palette-btn.bookmarked.answered {
+  background: var(--success-color);
+}
+
+.palette-legend {
+  padding: 20px;
+  border-top: 1px solid var(--border-color);
+  font-size: 13px;
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.legend-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-color {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.quiz-container {
+  background: var(--bg-primary);
+  border-radius: 15px;
+  box-shadow: var(--shadow-lg);
+  padding: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+  scroll-margin-top: 20px;
+}
+
+.quiz-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.marking-info {
+  display: inline-block;
+  background: var(--bg-tertiary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.progress-section {
+  margin-bottom: 25px;
+}
+
+.progress-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.progress-bar-container {
+  background: var(--bg-tertiary);
+  border-radius: 12px;
+  overflow: hidden;
+  height: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+  transition: width 0.4s ease;
+  border-radius: 12px;
+}
+
+.question-section {
+  min-height: 300px;
+  scroll-margin-top: 80px;
+  margin-bottom: 20px;
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.question-number {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary-color);
+  user-select: none;
+}
+
+.bookmark-btn {
+  background: transparent;
+  border: 2px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.bookmark-btn:active {
+  transform: scale(0.95);
+}
+
+.bookmark-btn.active {
+  background: var(--warning-color);
+  border-color: var(--warning-color);
+  color: #000;
+}
+
+.question {
+  font-size: 18px;
+  line-height: 1.7;
+  margin-bottom: 25px;
+  color: var(--text-primary);
+  user-select: text;
+}
+
+.question-image {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 10px;
+  object-fit: contain;
+  background: var(--bg-primary);
+  padding: 10px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.option-label {
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--border-color);
+  padding: 16px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--bg-secondary);
+  min-height: 60px;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.option-label:active {
+  transform: scale(0.98);
+}
+
+.option-label:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--primary-color);
+}
+
+.option-label.selected {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+.option-label input[type="radio"] {
+  margin-right: 15px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.option-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.option-image {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: var(--bg-primary);
+  padding: 10px;
+}
+
+.option-label.selected .option-image {
+  background: rgba(255,255,255,0.1);
+}
+
+/* FIXED NAVIGATION - KEY UPDATE */
+.navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-primary);
+  border-top: 2px solid var(--border-color);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+  z-index: 997;
+  padding: 15px 20px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 10px;
+  max-width: 100%;
+}
+
+.nav-btn {
+  padding: 14px 20px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+}
+
+.nav-btn:active {
+  transform: scale(0.97);
+}
+
+.nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.nav-btn.prev {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.nav-btn.prev:hover:not(:disabled) {
+  background: #5a6268;
+}
+
+.nav-btn.next {
+  background: var(--primary-color);
+  color: white;
+}
+
+.nav-btn.next:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.nav-btn.clear {
+  background: var(--danger-color);
+  color: white;
+}
+
+.nav-btn.clear:hover {
+  background: #c82333;
+}
+
+.nav-btn.submit {
+  background: var(--success-color);
+  color: white;
+  grid-column: 1 / -1;
+}
+
+.nav-btn.submit:hover {
+  background: var(--success-hover);
+}
+
+.result-section {
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.score-card {
+  background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+  color: white;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  margin-bottom: 30px;
+  user-select: none;
+}
+
+.score-card h2 {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.score-card p {
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: var(--bg-secondary);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  border: 2px solid var(--border-color);
+  user-select: none;
+}
+
+.stat-card h3 {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.stat-card.correct h3 { color: var(--success-color); }
+.stat-card.wrong h3 { color: var(--danger-color); }
+.stat-card.unattempted h3 { color: var(--secondary-color); }
+
+.question-review {
+  border: 2px solid var(--border-color);
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 20px;
+  background: var(--bg-secondary);
+}
+
+.question-review h4 {
+  margin-bottom: 15px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.review-option {
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  border: 2px solid var(--border-color);
+  background: var(--bg-primary);
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.review-option .option-image {
+  max-width: 150px;
+  max-height: 100px;
+}
+
+.review-option.correct {
+  background: #d4edda;
+  border-color: var(--success-color);
+  color: #155724;
+}
+
+.review-option.wrong {
+  background: #f8d7da;
+  border-color: var(--danger-color);
+  color: #721c24;
+}
+
+.review-option.user-selected {
+  border-width: 3px;
+  font-weight: 600;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.action-btn {
+  padding: 14px 30px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  min-width: 150px;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.action-btn.restart {
+  background: var(--danger-color);
+  color: white;
+}
+
+.action-btn.restart:hover {
+  background: #c82333;
+}
+
+.action-btn.download {
+  background: var(--primary-color);
+  color: white;
+}
+
+.action-btn.download:hover {
+  background: var(--primary-hover);
+}
+
+.action-btn.print {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.action-btn.print:hover {
+  background: #5a6268;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.palette-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.palette-content::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+}
+
+.palette-content::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+.palette-content::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-hover);
+}
+
+@media (max-width: 768px) {
+  :root {
+    --nav-height: 140px;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+  }
+
+  .quiz-container {
+    padding: 20px 15px;
+  }
+
+  .question-palette {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .palette-grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+  }
+
+  .palette-btn {
+    font-size: 13px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .palette-fab {
+    bottom: calc(var(--nav-height) + 10px);
+    right: 15px;
+    width: 56px;
+    height: 56px;
+    font-size: 22px;
+  }
+
+  .navigation {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px 15px;
+  }
+
+  .nav-btn {
+    min-height: 44px;
+    font-size: 15px;
+  }
+
+  .nav-btn.clear {
+    order: 3;
+  }
+
+  .nav-btn.submit {
+    grid-column: auto;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .legend-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .question {
+    font-size: 16px;
+  }
+
+  .option-label {
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+
+  .option-image {
+    max-height: 150px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .palette-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .palette-btn {
+    font-size: 12px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  .timer {
+    font-size: 16px;
+    padding: 8px 16px;
+  }
+
+  .option-image {
+    max-height: 120px;
+  }
+}
+
+@media (max-width: 360px) {
+  .palette-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media print {
+  .header-controls, .navigation, .palette-fab, .palette-overlay, .question-palette, .action-buttons, .bookmark-btn {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    padding-bottom: 0;
+  }
+
+  .container {
+    padding-bottom: 20px;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .palette-fab {
+    bottom: calc(var(--nav-height) + 5px);
+    right: 10px;
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  .palette-fab .badge {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>General Quiz - </h1>
+    <div class="header-controls">
+      <div class="timer" id="timer">00:00</div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle Theme">🌙</button>
+      <button class="fullscreen-btn" id="fullscreenBtn" aria-label="Toggle fullscreen" title="Fullscreen">⛶</button>
+    </div>
+  </div>
+
+  <div class="quiz-container" id="quizContainer">
+    <div class="quiz-header">
+      <div class="marking-info" id="markingInfo">Marking: +1, -0</div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-stats">
+        <span>Progress: <strong id="progressText">1/2</strong></span>
+        <span>Attempted: <strong id="attemptedText">0</strong></span>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+
+    <div class="question-section" id="questionSection">
+      <div class="question-header">
+        <div class="question-number" id="questionNumber">Question 1 of 2</div>
+        <button class="bookmark-btn" id="bookmarkBtn" aria-label="Bookmark question">
+          <span>🔖</span> <span>Bookmark</span>
+        </button>
+      </div>
+      
+      <div class="question" id="questionText"></div>
+      
+      <div class="options" id="optionsContainer"></div>
+    </div>
+
+    <div class="result-section hidden" id="resultSection"></div>
+  </div>
+</div>
+
+<!-- FIXED NAVIGATION BAR -->
+<div class="navigation" id="navigation">
+  <button class="nav-btn prev" id="prevBtn" aria-label="Previous question">
+    <span>←</span> Previous
+  </button>
+  <button class="nav-btn clear" id="clearBtn" aria-label="Clear answer">
+    Clear
+  </button>
+  <button class="nav-btn next" id="nextBtn" aria-label="Next question">
+    Next <span>→</span>
+  </button>
+  <button class="nav-btn submit hidden" id="submitBtn" aria-label="Submit quiz">
+    Submit Quiz
+  </button>
+</div>
+
+<button class="palette-fab" id="paletteFab" aria-label="Toggle question palette" title="Question Palette (P)">
+  📋
+  <span class="badge" id="answeredBadge">0</span>
+</button>
+
+<div class="palette-overlay" id="paletteOverlay"></div>
+
+<div class="question-palette" id="questionPalette">
+  <div class="palette-header">
+    <h3>Question Palette</h3>
+    <button class="palette-close" id="paletteClose" aria-label="Close palette">×</button>
+  </div>
+
+  <div class="palette-stats">
+    <div class="palette-stat answered">
+      <div class="number" id="paletteAnswered">0</div>
+      <div>Answered</div>
+    </div>
+    <div class="palette-stat unanswered">
+      <div class="number" id="paletteUnanswered">2</div>
+      <div>Not Answered</div>
+    </div>
+    <div class="palette-stat bookmarked">
+      <div class="number" id="paletteBookmarked">0</div>
+      <div>Bookmarked</div>
+    </div>
+  </div>
+
+  <div class="palette-search">
+    <input type="number" id="paletteSearch" placeholder="Jump to question number..." aria-label="Search questions" inputmode="numeric" pattern="[0-9]*">
+  </div>
+
+  <div class="palette-content">
+    <div class="palette-grid" id="paletteGrid"></div>
+  </div>
+
+  <div class="palette-legend">
+    <div class="legend-grid">
+      <div class="legend-item">
+        <div class="legend-color" style="background: var(--success-color);"></div>
+        <span>Answered</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: var(--bg-secondary); border: 2px solid var(--border-color);"></div>
+        <span>Not Answered</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: var(--primary-color);"></div>
+        <span>Current Question</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: var(--warning-color);"></div>
+        <span>🔖 Bookmarked</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    "sr_no": 1,
+    "question": "<p> <b>Assertion (A): Uttar Pradesh has the maximum population among all the Indian states. / </b>अभिकथन <b>(A): </b>उत्तर प्रदेश भारत के सभी राज्यों में सर्वाधिक जनसंख्या वाला राज्य है।<b><br/> Reason (R): Uttar Pradesh is the largest state in India by area. / </b>कारण <b>(R): </b>उत्तर प्रदेश क्षेत्रफल की दृष्टि से भारत का सबसे बड़ा राज्य है। <b>(UPSSSC Junior Assistant 29/06/2025)</b></p>",
+    "option1": "<p> Both Assertion (A) and Reason (R) are true, but Reason (R) is not the correct explanation<br/> of Assertion (A) / अभिकथन (A) और कारण (R) दोनों सत्य हैं, लेकिन कारण (R), अभिकथन (A) की सही व्याख्या नहीं है।</p>",
+    "option2": "<p> Assertion (A) is true, but Reason (R) is false / अभिकथन (A) सत्य है, लेकिन कारण (R) असत्य है।</p>",
+    "option3": "<p> Assertion (A) is false, but Reason (R) is true / अभिकथन (A) असत्य है, लेकिन कारण (R) सत्य है।</p>",
+    "option4": "<p> Both Assertion (A) and Reason (R) are true and Reason (R) is the correct explanation ofAssertion (A) / अभिकथन (A) और कारण (R) दोनों सत्य हैं तथा कारण (R), अभिकथन (A) की सही व्याख्या है।</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> According to the 2011 census report Uttar Pradesh is the most populous state in India, ,While the largest state by area is Rajasthan. Hence Assertion (A) is true, but Reason (R) is false. /2011 की जनगणना रिपोर्ट के अनुसार उत्तर प्रदेश भारत का सर्वाधिक जनसंख्या वाला राज्य है, जबकि क्षेत्रफल की दृष्टि से सबसे बड़ा राज्य राजस्थान है। अतः अभिकथन (A) सत्य है, लेकिन कारण (R) असत्य है।</p>"
+  },
+  {
+    "sr_no": 2,
+    "question": "<p> <b>Which district in Uttar Pradesh had the highest literacy rate according to the 2011 census? / 2011 </b>की जनगणना के अनुसार उत्तर प्रदेश में सर्वाधिक साक्षरता दर किस जिले की थी<b>? (UPSSSC AGTA 13/07/2025)</b></p>",
+    "option1": "<p> Gautam Buddha Nagar / गौतम बुद्ध नगर</p>",
+    "option2": "<p> Kanpur Nagar / कानपुर नगर</p>",
+    "option3": "<p> Ghaziabad / गाजियाबाद</p>",
+    "option4": "<p> Lucknow / लखनऊ</p>",
+    "answer": "1",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> As per census 2011, Gautam Buddha Nagar has the highest literacy rate among all districts in Uttar Pradesh, followed by Kanpur Nagar and Auraiya. / 2011 की जनगणना के अनुसार, उत्तर प्रदेश के सभी जिलों में गौतम बुद्ध नगर की साक्षरता दर सर्वाधिक है, इसके बाद कानपुर नगर और औरैया का स्थान है।</p>"
+  },
+  {
+    "sr_no": 3,
+    "question": "<p> <b>Arrange the following districts of Uttar Pradesh form lowest to highest based on literacy rate as per 2011 census. / 2011 </b>की जनगणना के अनुसार साक्षरता दर के आधार पर उत्तर प्रदेश के निम्नलिखित जिलों को न्यूनतम से उच्चतम क्रम में व्यवस्थित करें। <b>(UPSSSC Jr. Analyst Drugs 2024 (02/02/2025))<br/> I. Azamgarh / </b>आजमगढ़<b><br/> II. Mainpuri / </b>मैनपुरी<b><br/> III. Bahraich / </b>बहराईच<b><br/> IV. Barabanki / </b>बाराबंकी</p>",
+    "option1": "<p> III, IV, II, I</p>",
+    "option2": "<p> IV, III, I, II</p>",
+    "option3": "<p> IV, III, II, I</p>",
+    "option4": "<p> III, IV, I, II</p>",
+    "answer": "4",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> The districts of Uttar Pradesh from lowest to highest based on literary rate as per census 2011 is Bahraich, Barabanki, Azamgarh, Mainpuri. The five districts with least literary rate are Shravasti (46.74%), Bahraich (49.36%), Balrampur (49.51%) Badaun (51.29%) and Rampur (53.34%)/ 2011 की जनगणना के अनुसार साक्षरता दर के आधार पर उत्तर प्रदेश के जिलों का न्यूनतम से उच्चतम क्रम बहराइच, बाराबंकी, आज़मगढ़, मैनपुरी है। सबसे कम साक्षरता दर वाले पाँच जिले श्रावस्ती (46.74%), बहराइच (49.36%), बलरामपुर (49.51%), बदायूं (51.29%) और रामपुर (53.34%) हैं।<br/> Correct order: सही क्रम: बहराइच → बाराबंकी → आज़मगढ़ → मैनपुरी</p>"
+  },
+  {
+    "sr_no": 4,
+    "question": "<p> <b>As per the Census-2011, the percentage of women in the total population in Uttar Pradesh Was? / </b>जनगणना<b>-2011 </b>के अनुसार उत्तर प्रदेश की कुल जनसंख्या में महिलाओं का प्रतिशत कितना था<b>? (UPSSSC Homeopathic Pharmacist 2024 (02/02/2025))</b></p>",
+    "option1": "<p> 49.56%</p>",
+    "option2": "<p> 54.83%</p>",
+    "option3": "<p> 47.71%</p>",
+    "option4": "<p> 36.43%</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> As per the Census 2011, the percentage of women in the total population in Uttar Pradesh was 47.71%. The total population of Uttar Pradesh was 19,98,12,341 with 10,44,80,510 males and 9,53,31,831 females/ जनगणना 2011 के अनुसार उत्तर प्रदेश की कुल जनसंख्या में महिलाओं का प्रतिशत 47.71% था। उत्तर प्रदेश की कुल जनसंख्या 19,98,12,341 थी, जिसमें 10,44,80,510 पुरुष तथा 9,53,31,831 महिलाएँ थीं।</p>"
+  },
+  {
+    "sr_no": 5,
+    "question": "<p> <b>The four most populated state of India are– / </b>भारत के चार सर्वाधिक जनसंख्या वाले राज्य हैं <b>(Allahabad High Court RO 05--01-2022 Shift-II)</b></p>",
+    "option1": "<p> Uttar Pradesh, Maharashtra, Bihar, West Bengal/ उत्तर प्रदेश, महाराष्ट्र, बिहार, पश्चिम बंगाल</p>",
+    "option2": "<p> Uttar Pradesh, Maharashtra, Rajasthan, Gujarat/ उत्तर प्रदेश, महाराष्ट्र, राजस्थान, गुजरात</p>",
+    "option3": "<p> Uttar Pradesh, Bihar, Andhra Pradesh, Tamil Nadu/ उत्तर प्रदेश, बिहार, आंध्र प्रदेश, तमिलनाडु</p>",
+    "option4": "<p> Maharashtra, Karnataka, Madhya Pradesh, Tamil Nadu/ महाराष्ट्र, कर्नाटक, मध्य प्रदेश, तमिलनाडु</p>",
+    "answer": "1",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Census 2011 ranking:<br/> 1. Uttar Pradesh<br/> 2. Maharashtra<br/> 3. Bihar<br/> 4. West Bengal / जनगणना 2011 की रैंकिंग:<br/> 5. उत्तर प्रदेश<br/> 6. महाराष्ट्र<br/> 7. बिहार<br/> 8. पश्चिम बंगाल</p>"
+  },
+  {
+    "sr_no": 6,
+    "question": "<p> <b>Which of the following districts of Uttar Pradesh has the highest literacy percentage? / </b>निम्नलिखित में से उत्तर प्रदेश के किस जिले की साक्षरता प्रतिशत सर्वाधिक है<b>? (Allahabad High Court ARO 19-12-2021 Shift)</b></p>",
+    "option1": "<p> Auraiya / औरैया</p>",
+    "option2": "<p> Prayagraj / प्रयागराज</p>",
+    "option3": "<p> Kanpur / कानपुर</p>",
+    "option4": "<p> Varanasi / वाराणसी</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> The district Gautam Buddha Nagar has the highest literacy percentage (80.12%) followed by Kanpur Nagar (79.65) and Auraiya (78.95%). / गौतम बुद्ध नगर जिले की साक्षरता दर सर्वाधिक (80.12%) है, इसके बाद कानपुर नगर (79.65%) और औरैया (78.95%) का स्थान है।</p>"
+  },
+  {
+    "sr_no": 7,
+    "question": "<p> <b>Which district of Uttar Pradesh is the largest in the terms of population? / </b>जनसंख्या की दृष्टि से उत्तर प्रदेश का सबसे बड़ा जिला कौन<b>-</b>सा है<b>? (Allahabad High Court ARO 18-12-2021 Shift-I, UPPSC Vetting Officer 2020)</b></p>",
+    "option1": "<p> Moradabad / मुरादाबाद</p>",
+    "option2": "<p> Lucknow / लखनऊ</p>",
+    "option3": "<p> Allahabad / इलाहाबाद</p>",
+    "option4": "<p> Ghaziabad / गाजियाबाद</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> The largest district of Uttar Pradesh in terms of population is Allahabad (Prayagraj) and in terms of area the largest district of Uttar Pradesh is Lakhimpur Kheri./ जनसंख्या की दृष्टि से उत्तर प्रदेश का सबसे बड़ा जिला इलाहाबाद (प्रयागराज) है तथा क्षेत्रफल की दृष्टि से सबसे बड़ा जिला लखीमपुर खीरी है।</p>"
+  },
+  {
+    "sr_no": 8,
+    "question": "<p> <b>Consider the following cities of Uttar Pradesh and arrange them in descending order on the basis of population(2011 Census) / </b>उत्तर प्रदेश के निम्नलिखित शहरों को जनसंख्या <b>(2011 </b>की जनगणना<b>) </b>के आधार पर अवरोही क्रम में व्यवस्थित करें। <b>(UPPCS (Pre) 2022)<br/> (1) Ghaziabad / </b>गाजियाबाद<b><br/> (2) Kanpur / </b>कानपुर<b><br/> (3) Agra / </b>आगरा<b><br/> (4) Lucknow / </b>लखनऊ<b><br/> Select the correct answer from the code given below-<br/> Code :<br/> </b><br/> </p>",
+    "option1": "<p> I, II, III, IV</p>",
+    "option2": "<p> II, I, IV, III</p>",
+    "option3": "<p> II, IV, I, III</p>",
+    "option4": "<p> III, II, I, IV</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> As per census 2011 report, the correct descending order of given cities of Uttar Pradesh on the basis of population is– Kanpur city (2920496), Lucknow (2815601), Ghaziabad (2358525) and Agra (1585704). /2011 की जनगणना रिपोर्ट के अनुसार जनसंख्या के आधार पर सही अवरोही क्रम है— कानपुर नगर (2920496), लखनऊ (2815601), गाजियाबाद (2358525) तथा आगरा (1585704)।</p>"
+  },
+  {
+    "sr_no": 9,
+    "question": "<p> <b>As per census 2011, which of the following districts of Uttar Pradesh had the highest<br/> population? / </b>जनगणना <b>2011 </b>के अनुसार उत्तर प्रदेश के निम्नलिखित में से किस जिले की जनसंख्या सर्वाधिक थी<b>? (UPPSC ACF RFO (Mains) 2021 Paper-I)<br/> </b><br/> </p>",
+    "option1": "<p> Lucknow / लखनऊ</p>",
+    "option2": "<p> Gorakhpur / गोरखपुर</p>",
+    "option3": "<p> Prayagraj / प्रयागराज</p>",
+    "option4": "<p> Kanpur / कानपुर</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> As per census 2011, the population of above given districts are as – District - Population Allahabad - 5954391 Lucknow - 4589838 Kanpur - 4581208 Gorakhpur – 4440895./ जनगणना 2011 के अनुसार उपर्युक्त जिलों की जनसंख्या इस प्रकार है—जिला – जनसंख्या ,इलाहाबाद (प्रयागराज) – 59,54,391, लखनऊ – 45,89,838, कानपुर – 45,81,208, गोरखपुर – 44,40,895</p>"
+  },
+  {
+    "sr_no": 10,
+    "question": "<p> <b>Before becoming a district, Shamli was a tehsil of which district, and what was its initial name when it gained recognition as a district? / </b>जिला बनने से पहले शामली किस जिले की तहसील था तथा जिला बनने पर उसका प्रारंभिक नाम क्या था<b>? (UPSSSC VPO 24/04/2025)</b></p>",
+    "option1": "<p> Baghpat, Shyamnagar / बागपत, श्यामनगर</p>",
+    "option2": "<p> Saharanpur, Shivnagar / सहारनपुर, शिवनगर</p>",
+    "option3": "<p> Panipat, Shivalik Nagar / पानीपत, शिवालिक नगर</p>",
+    "option4": "<p> Muzaffarnagar, Prabuddhnagar / मुजफ्फरनगर, प्रबुद्धनगर</p>",
+    "answer": "4",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Shamli district was carved out from Muzaffarnagar district in September 2011 as Prabuddhnagar and renamed Shamli in July 2012. The district has three tehsils : Shamli, Kairana and Unn.<br/> 1. Earlier a tehsil of Muzaffarnagar<br/> 2. Initial district name: Prabuddhnagar<br/> 3. Later renamed Shamli / शामली जिला सितंबर 2011 में मुजफ्फरनगर जिले से अलग होकर प्रबुद्धनगर नाम से बनाया गया था तथा जुलाई 2012 में इसका नाम बदलकर शामली कर दिया गया। इस जिले में तीन तहसीलें हैं— शामली, कैराना और ऊन।<br/> 4. पूर्व में मुजफ्फरनगर की एक तहसील था।<br/> 5. प्रारंभिक जिला नाम: प्रबुद्धनगर।<br/> 6. बाद में नाम बदलकर शामली किया गया।</p>"
+  },
+  {
+    "sr_no": 11,
+    "question": "<p> <b>Kaushambi is a part of ? / </b>कौशाम्बी किसका भाग है<b>? (UPSSSC Assistant Accountant &amp; Auditor 2025)</b></p>",
+    "option1": "<p> Merrut Division / मेरठ मंडल</p>",
+    "option2": "<p> Lucknow Division / लखनऊ मंडल</p>",
+    "option3": "<p> Prayagraj Division / प्रयागराज मंडल</p>",
+    "option4": "<p> Mirjapur Division / मिर्जापुर मंडल</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Kaushambi district is part of the Prayagraj division in Uttar Pradesh. The division also include districts of Prayagraj, Pratapgarh and Fatehpur. Kaushambi was carved from Prayagraj / कौशाम्बी जिला उत्तर प्रदेश के प्रयागराज मंडल का भाग है। इस मंडल में प्रयागराज, प्रतापगढ़ और फतेहपुर जिले भी शामिल हैं। कौशाम्बी का गठन प्रयागराज जिले से किया गया था।</p>"
+  },
+  {
+    "sr_no": 12,
+    "question": "<p> <b>The 'Doab' region in Uttar Pradesh refers to the land between which two rivers? / </b>उत्तर प्रदेश में ‘दोआब’ क्षेत्र से तात्पर्य किन दो नदियों के बीच की भूमि से है<b>?(UPSSSC Mandi Parishad Sachiv Grade II 2024 (13/04/2025)</b></p>",
+    "option1": "<p> Ghaghara and Gandak / घाघरा और गंडक</p>",
+    "option2": "<p> Ganga and Ghaghara / गंगा और घाघरा</p>",
+    "option3": "<p> Ganga and Yamuna / गंगा और यमुना</p>",
+    "option4": "<p> Yamuna and Ganga / यमुना और गंगा</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> In Uttar Pradesh, the most prominent and agriculturally significant Doab region is the GangaYamuna Doab, located between the Ganga (Ganges) and Yamuna rivers.<br/> 1. “Doab” = land between two rivers<br/> 2. In UP, it refers to Ganga–Yamuna Doab / उत्तर प्रदेश में सबसे प्रमुख और कृषि की दृष्टि से महत्वपूर्ण दोआब क्षेत्र गंगा–यमुना दोआब है, जो गंगा और यमुना नदियों के बीच स्थित है।<br/> 3. “दोआब” = दो नदियों के बीच की भूमि<br/> 4. उत्तर प्रदेश में यह गंगा–यमुना दोआब को संदर्भित करता है।</p>"
+  },
+  {
+    "sr_no": 13,
+    "question": "<p> <b>Which of the following districts of Uttar Pradesh shares boundaries with Madhya<br/> Pradesh? / </b>उत्तर प्रदेश के निम्नलिखित में से कौन<b>-</b>से जिले मध्य प्रदेश की सीमा से लगे हुए हैं<b>? (UPSSSC Assistant Accountant &amp; Auditor 2025)</b></p>",
+    "option1": "<p> Chitrakoot / चित्रकूट</p>",
+    "option2": "<p> Mahoba / महोबा</p>",
+    "option3": "<p> Both (a) and (b) /(a) और (b) दोनों</p>",
+    "option4": "<p> Ballia / बलिया</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Chitrakoot and Mahoba districts of Uttar Pradesh share border with Madhya Pradesh. A total of 11 districts of Uttar Pradesh (Agra, Etawah, Jalaun, Jhansi, Lalitpur, Mahoba, Banda, Chitrakoot, Prayagraj, Mirzapur and Sonbhadra) share border with Madhya Pradesh / उत्तर प्रदेश के चित्रकूट और महोबा जिले मध्य प्रदेश की सीमा से लगे हुए हैं। उत्तर प्रदेश के कुल 11 जिले (आगरा, इटावा, जालौन, झाँसी, ललितपुर, महोबा, बाँदा, चित्रकूट, प्रयागराज, मिर्जापुर और सोनभद्र) मध्य प्रदेश की सीमा से जुड़े हुए हैं।</p>"
+  },
+  {
+    "sr_no": 14,
+    "question": "<p> <b>Which one of the following is not correctly matched? / </b>निम्नलिखित में से कौन<b>-</b>सा सही सुमेलित नहीं है<b>? (UPPSC ACF RFO (Mains) 2021 Paper-I)<br/> District of Uttar Pradesh - Maximum/ Minimum area / </b>उत्तर प्रदेश का जिला <b>- </b>अधिकतम<b>/</b>न्यूनतम क्षेत्रफल</p>",
+    "option1": "<p> Lakhimpur Kheri - Maximum geographical area / लखीमपुर खीरी - अधिकतम भौगोलिक क्षेत्रफल</p>",
+    "option2": "<p> Sonbhadra - Maximum forest covered area / सोनभद्र - अधिकतम वनाच्छादित क्षेत्र</p>",
+    "option3": "<p> Sitapur - Minimum geographical area / सीतापुर - न्यूनतम भौगोलिक क्षेत्रफल</p>",
+    "option4": "<p> Sant Ravidas Nagar - Minimum forest covered area / संत रविदास नगर - न्यूनतम वनाच्छादित क्षेत्र</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> The correct match is as follows – District of Uttar Pradesh Maximum/ Minimum area<br/> 1. Lakhimpur Kheri - Maximum geographical area<br/> 2. Sonbhadra - Maximum forest covered area<br/> 3. Sitapur - Highest Scheduled Caste populated district<br/> 4. Sant Ravidas Nagar Hapur (660 Sq.km.) Minimum geographical area / सही सुमेलन इस प्रकार है—<br/> उत्तर प्रदेश का जिला — अधिकतम/न्यूनतम क्षेत्रफल<br/> 5. लखीमपुर खीरी — अधिकतम भौगोलिक क्षेत्रफल<br/> 6. सोनभद्र — अधिकतम वनाच्छादित क्षेत्र<br/> 7. सीतापुर — सर्वाधिक अनुसूचित जाति जनसंख्या वाला जिला<br/> 8. संत रविदास नगर (हापुड़) (660 वर्ग किमी) — न्यूनतम भौगोलिक क्षेत्रफल</p>"
+  },
+  {
+    "sr_no": 15,
+    "question": "<p> <b>The 'Tharu' tribal dance is a cultural hallmark of which region in Uttar Pradesh? /‘</b>थारू’ जनजातीय नृत्य उत्तर प्रदेश के किस क्षेत्र की सांस्कृतिक पहचान है<b>? (UPSSSC AGTA 13/07/2025)</b></p>",
+    "option1": "<p> Eastern Uttar Pradesh / पूर्वी उत्तर प्रदेश</p>",
+    "option2": "<p> Western Uttar Pradesh / पश्चिमी उत्तर प्रदेश</p>",
+    "option3": "<p> Bundelkhand / बुंदेलखंड</p>",
+    "option4": "<p> Terai Region / तराई क्षेत्र</p>",
+    "answer": "4",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Tharu tribe inhabits Terai belt (Bahraich, Lakhimpur, Pilibhit) / थारू जनजाति उत्तर प्रदेश के तराई क्षेत्र (बहराइच, लखीमपुर, पीलीभीत) में निवास करती है।</p>"
+  },
+  {
+    "sr_no": 16,
+    "question": "<p> <b>Which of the following is not a Scheduled Tribe of Uttar Pradesh? / </b>निम्नलिखित में से कौन<b>-</b>सी उत्तर प्रदेश की अनुसूचित जनजाति नहीं है<b>? (Allahabad High Court CA/RGC 21-12-2021 Shift)</b></p>",
+    "option1": "<p> Gond / गोंड</p>",
+    "option2": "<p> Tangkhul / तांगखुल</p>",
+    "option3": "<p> Tharu / थारू</p>",
+    "option4": "<p> Bhil / भील</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Gond ,Tharu , Bhil. But Tangkhul (Manipur tribe) / गोंड, थारू और भील उत्तर प्रदेश की अनुसूचित जनजातियाँ हैं, जबकि तांगखुल मणिपुर की जनजाति है।</p>"
+  },
+  {
+    "sr_no": 17,
+    "question": "<p> <b>Tribal dance ‘Shora dance’ is associated with which district of Uttar Pradesh? / </b>जनजातीय ‘शोरा नृत्य’ उत्तर प्रदेश के किस जिले से संबंधित है<b>? (Allahabad High Court ARO 06-01-2022 Shift-I, Allahabad High Court RO 06-01-2022 Shift-I)</b></p>",
+    "option1": "<p> Gorakhpur / गोरखपुर</p>",
+    "option2": "<p> Lalitpur / ललितपुर</p>",
+    "option3": "<p> Prayagraj / प्रयागराज</p>",
+    "option4": "<p> Varanasi / वाराणसी</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Shora tribal dance, Practised by tribes of Lalitpur / शोरा जनजातीय नृत्य, ललितपुर जिले की जनजातियों द्वारा किया जाता है।</p>"
+  },
+  {
+    "sr_no": 18,
+    "question": "<p> <b>Buxa tribe is found in which district of UttarPradesh? / </b>बुक्सा जनजाति उत्तर प्रदेश के किस जिले में पाई जाती है<b>? (Allahabad High Court ARO 16-12-2021 Shift-I)</b></p>",
+    "option1": "<p> Bijnor and Agra / बिजनौर और आगरा</p>",
+    "option2": "<p> Bahraich and Lakhimpur / बहराइच और लखीमपुर</p>",
+    "option3": "<p> Mirzapur and Sonbhardra / मिर्जापुर और सोनभद्र</p>",
+    "option4": "<p> Lalitpur and Jalaun / ललितपुर और जालौन</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Buxa tribe district, Found in Terai region, Mainly Bahraich &amp; Lakhimpur Kheri / बुक्सा जनजाति उत्तर प्रदेश के तराई क्षेत्र में पाई जाती है। ,मुख्यतः बहराइच और लखीमपुर खीरी जिलों में।</p>"
+  },
+  {
+    "sr_no": 19,
+    "question": "<p> <b>The Agariya, Baiga and Bhuiya scheduled tribes mainly reside in which of the following<br/> districts of Uttar Pradesh? / </b>अगारिया<b>, </b>बैगा और भुइयाँ अनुसूचित जनजातियाँ मुख्यतः उत्तर प्रदेश के किस जिले में निवास करती हैं<b>? (UPPSC BEO (Pre) 2019, UPPCS (Mains) Gst Ist 2017)</b></p>",
+    "option1": "<p> Ambedkar Nagar / अंबेडकर नगर</p>",
+    "option2": "<p> Jalaun / जालौन</p>",
+    "option3": "<p> Sonbhadra / सोनभद्र</p>",
+    "option4": "<p> Lalitpur / ललितपुर</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Agariya, Baiga, Bhuiya tribes , Concentrated in Sonbhadra , Forest &amp; plateau region / अगारिया, बैगा और भुइयाँ जनजातियाँ, सोनभद्र में सघन रूप से पाई जाती हैं, वन एवं पठारी क्षेत्र</p>"
+  },
+  {
+    "sr_no": 20,
+    "question": "<p> <b>Which of the following pairs is correctly matched? / </b>निम्नलिखित में से कौन<b>-</b>सा युग्म सही सुमेलित है<b>? (UP UDA/LDA (Mains) G.S., 2010)</b></p>",
+    "option1": "<p> Bhotia – Barabanki / भोटिया – बाराबंकी</p>",
+    "option2": "<p> Buxa – Bijnor / बुक्सा – बिजनौर</p>",
+    "option3": "<p> Raaji – Gorakhpur / राजी – गोरखपुर</p>",
+    "option4": "<p> Tharu – Banda / थारू – बाँदा</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Buxa – Bijnor , and Other pairs incorrect / बुक्सा – बिजनौर, अन्य युग्म गलत हैं।</p>"
+  },
+  {
+    "sr_no": 21,
+    "question": "<p> <b>Which of the following scheduled tribes is found in the Terai region of Uttar Pradesh? / </b>निम्नलिखित में से कौन<b>-</b>सी अनुसूचित जनजाति उत्तर प्रदेश के तराई क्षेत्र में पाई जाती है<b>? (UPPCS (Mains) GS Ist 2013, UPPSC RO/ARO (Pre) Re-Exam 2016, UPPSC ACF/RFO (Mains) Ist 2018)</b></p>",
+    "option1": "<p> Buxa / बुक्सा</p>",
+    "option2": "<p> Bhotia / भोटिया</p>",
+    "option3": "<p> Khari / खारी</p>",
+    "option4": "<p> Gond / गोंड</p>",
+    "answer": "1",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Tribe of Terai region , Buxa tribe belongs to Terai belt / तराई क्षेत्र की जनजाति, बुक्सा जनजाति तराई क्षेत्र से संबंधित है।</p>"
+  },
+  {
+    "sr_no": 22,
+    "question": "<p> <b>Which of the following tribes of Uttar Pradesh celebrates Diwali as a day of mourning? / </b>उत्तर प्रदेश की निम्नलिखित में से कौन<b>-</b>सी जनजाति दीपावली को शोक दिवस के रूप में मनाती है<b>? (UPPSC RO/ARO (Mains) -2017, UPPSC BEO Exam- 2006)</b></p>",
+    "option1": "<p> Sahariya / सहरिया</p>",
+    "option2": "<p> Baiga / बैगा</p>",
+    "option3": "<p> Paharia / पहाड़िया</p>",
+    "option4": "<p> Tharu / थारू</p>",
+    "answer": "4",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Tharu consider Diwali a death-ritual day / थारू जनजाति दीपावली को मृत्यु-संस्कार का दिन मानती है।</p>"
+  },
+  {
+    "sr_no": 23,
+    "question": "<p> <b>The state having the shortest border with Uttar Pradesh is? </b>उत्तर प्रदेश की सीमा सबसे कम किस राज्य से लगती है<b>? (Allahabad High Court ARO 19-12-2021 Shift)</b></p>",
+    "option1": "<p> Madhya Pradesh / मध्य प्रदेश</p>",
+    "option2": "<p> Himachal Pradesh / हिमाचल प्रदेश</p>",
+    "option3": "<p> Jharkhand / झारखंड</p>",
+    "option4": "<p> Chhattisgarh / छत्तीसगढ़</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> UP borders HP only in Saharanpur, Hence shortest boundary / उत्तर प्रदेश की सीमा हिमाचल प्रदेश से केवल सहारनपुर जिले में लगती है, इसलिए यह सबसे छोटी सीमा है।</p>"
+  },
+  {
+    "sr_no": 24,
+    "question": "<p> <b>Uttar Pradesh Day is celebrated on which date? / </b>उत्तर प्रदेश दिवस किस तिथि को मनाया जाता है<b>? (UPPCS (Pre) 2022, Lower Exam 30.09.2019 (Shift-I), Allahabad High Court APS 23-12-2021 Shift-I)</b></p>",
+    "option1": "<p> 23 January /23 जनवरी</p>",
+    "option2": "<p> 25 January /25 जनवरी</p>",
+    "option3": "<p> 24 January /24 जनवरी</p>",
+    "option4": "<p> 26 January /26 जनवरी</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Uttar Pradesh Day State formed: 24 January 1950 / उत्तर प्रदेश दिवस राज्य की स्थापना: 24 जनवरी 1950</p>"
+  },
+  {
+    "sr_no": 25,
+    "question": "<p> <b>Which one of the following districts of Uttar Pradesh is not touched by the international<br/> Border? / </b>निम्नलिखित में से उत्तर प्रदेश का कौन<b>-</b>सा जिला अंतरराष्ट्रीय सीमा से स्पर्श नहीं करता है<b>? (UPPSC Food Safety Inspector Exam. 2013)</b></p>",
+    "option1": "<p> Balrampur / बलरामपुर</p>",
+    "option2": "<p> Shravasti / श्रावस्ती</p>",
+    "option3": "<p> Pilibhit / पीलीभीत</p>",
+    "option4": "<p> Basti / बस्ती</p>",
+    "answer": "4",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> 1. Balrampur - Nepal<br/> 2. Shravasti - Nepal<br/> 3. Pilibhit - Nepal<br/> 4. Basti - (no international border) / बलरामपुर — नेपाल<br/> 5. श्रावस्ती — नेपाल<br/> 6. पीलीभीत — नेपाल<br/> 7. बस्ती — (कोई अंतरराष्ट्रीय सीमा नहीं)</p>"
+  },
+  {
+    "sr_no": 26,
+    "question": "<p> <b>What was the population density of Uttar Pradesh according to the 2011 census? /2011 </b>की जनगणना के अनुसार उत्तर प्रदेश की जनसंख्या घनत्व कितना था<b>? (UPSSSC Mandi Parishad Sachiv Grade II 2024)</b></p>",
+    "option1": "<p> 950 persons per square km / 950 व्यक्ति प्रति वर्ग किलोमीटर</p>",
+    "option2": "<p> 900 persons per square km /900 व्यक्ति प्रति वर्ग किलोमीटर</p>",
+    "option3": "<p> 700 persons per square km /700 व्यक्ति प्रति वर्ग किलोमीटर</p>",
+    "option4": "<p> 829 persons per square km /829 व्यक्ति प्रति वर्ग किलोमीटर</p>",
+    "answer": "4",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Population density (2011) , Census figure: 829 persons/sq km / जनसंख्या घनत्व (2011), जनगणना आंकड़ा: 829 व्यक्ति प्रति वर्ग किमी</p>"
+  },
+  {
+    "sr_no": 27,
+    "question": "<p> <b>As per the Census-2011, the percentage of women in the total population in Uttar Pradesh Was? </b>जनगणना<b>-2011 </b>के अनुसार उत्तर प्रदेश की कुल जनसंख्या में महिलाओं का प्रतिशत कितना था<b>? (UPSSSC Homeopathic Pharmacist 2024 (02/02/2025)</b></p>",
+    "option1": "<p> 49.56%</p>",
+    "option2": "<p> 54.83%</p>",
+    "option3": "<p> 47.71%</p>",
+    "option4": "<p> 36.43%</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> women population 47.71% / महिला जनसंख्या → 47.71%</p>"
+  },
+  {
+    "sr_no": 28,
+    "question": "<p> <b>According to the census 2011, what is the percentage of rural population in the total<br/> population of Uttar Pradesh? /</b>जनगणना <b>2011 </b>के अनुसार उत्तर प्रदेश की कुल जनसंख्या में ग्रामीण जनसंख्या का प्रतिशत कितना है<b>? (UPPSC ACF Exam. 2013)</b></p>",
+    "option1": "<p> 68.8</p>",
+    "option2": "<p> 77.7</p>",
+    "option3": "<p> 78.8</p>",
+    "option4": "<p> 83.3</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> 77.7% / ग्रामीण जनसंख्या ≈ 77.7%</p>"
+  },
+  {
+    "sr_no": 29,
+    "question": "<p> <b>As per Census 2011, the literacy rate of Uttar Pradesh is – / </b>जनगणना <b>2011 </b>के अनुसार उत्तर प्रदेश की साक्षरता दर कितनी है<b>? (UPSSSC Mandi Parishad 22/05/2022)</b></p>",
+    "option1": "<p> 70.69%</p>",
+    "option2": "<p> 71.69%</p>",
+    "option3": "<p> 67.68%</p>",
+    "option4": "<p> 72.89%</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> Literacy rate of UP (2011), Overall literacy: 67.68% / उत्तर प्रदेश की साक्षरता दर (2011), कुल साक्षरता: 67.68%</p>"
+  },
+  {
+    "sr_no": 30,
+    "question": "<p> <b>The standard meridian of India is ______ and it passes through _____. / </b>भारत का मानक मध्याह्न रेखा <b>(</b>स्टैंडर्ड मेरिडियन<b>) ______ </b>है और यह <b>_____ </b>से होकर गुजरती है। <b>(UPSSSC Jr. Analyst Drugs 2024 (02/02/2025)</b></p>",
+    "option1": "<p> 82°3'E, Varanasi/82°3'E / 82°3′ पूर्व, वाराणसी / 82°3′ पूर्व</p>",
+    "option2": "<p> 82°3'E, Prayagraj/82°3'E / 82°3′ पूर्व, प्रयागराज / 82°3′ पूर्व</p>",
+    "option3": "<p> 82°30'E, Mirzapur/82°30'E / 82°30′ पूर्व, मिर्जापुर / 82°30′ पूर्व</p>",
+    "option4": "<p> 82°30'E, Varanasi/82°30'E / 82°30′ पूर्व, वाराणसी / 82°30′ पूर्व</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "1",
+    "solution_text": "<p> The Indian Standard Meridian (ISM) is a line of longitude that is used to determine the official time for entire India. It is located at 82°30' East and passes through Mirzapur in Uttar Pradesh. / भारतीय मानक मध्याह्न रेखा (ISM) देश के आधिकारिक समय निर्धारण के लिए प्रयुक्त देशांतर रेखा है। यह 82°30′ पूर्व पर स्थित है और उत्तर प्रदेश के मिर्जापुर से होकर गुजरती है।</p>"
+  }
+];
+
+let currentQuestion = 0;
+let answers = {};
+let bookmarks = new Set();
+let timerSeconds = 0;
+let timerInterval = null;
+let isPaletteOpen = false;
+
+// Use a namespaced storage key so different quizzes/pages don't collide
+const STORAGE_KEY = 'quizState_' + (document.title || 'default');
+
+function isImageURL(str) {
+  return str && (str.startsWith('http://') || str.startsWith('https://'));
+}
+
+function createOptionContent(optionText) {
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'option-content';
+    
+    if (isImageURL(optionText)) {
+        const img = document.createElement('img');
+        img.src = optionText;
+        img.className = 'option-image';
+        img.alt = 'Option image';
+        img.loading = 'lazy';
+        img.onerror = function() {
+            this.style.display = 'none';
+            const errorText = document.createTextNode('Image failed to load');
+            contentDiv.appendChild(errorText);
+        };
+        contentDiv.appendChild(img);
+    } else {
+        contentDiv.innerHTML = optionText;  // FIXED: Use innerHTML
+    }
+    
+    return contentDiv;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  initQuiz();
+  initEventListeners();
+  loadFromLocalStorage();
+  startTimer();
+  createPalette();
+  preventDoubleTapZoom();
+});
+
+function preventDoubleTapZoom() {
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', (event) => {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+      event.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, { passive: false });
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem('quizTheme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateThemeIcon();
+}
+
+function updateThemeIcon() {
+  const theme = document.documentElement.getAttribute('data-theme');
+  const themeBtn = document.getElementById('themeToggle');
+  if (themeBtn) {
+    themeBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  }
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('quizTheme', newTheme);
+  updateThemeIcon();
+}
+
+function initQuiz() {
+  loadQuestion(currentQuestion);
+  updateMarkingInfo();
+}
+
+function initEventListeners() {
+  const themeBtn = document.getElementById('themeToggle');
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  
+  if (themeBtn) {
+    themeBtn.addEventListener('click', toggleTheme);
+    themeBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      toggleTheme();
+    });
+  }
+  
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+    fullscreenBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      toggleFullscreen();
+    });
+  }
+  
+  addButtonListener('prevBtn', prevQuestion);
+  addButtonListener('nextBtn', nextQuestion);
+  addButtonListener('clearBtn', clearAnswer);
+  addButtonListener('submitBtn', confirmSubmit);
+  addButtonListener('bookmarkBtn', toggleBookmark);
+  
+  addButtonListener('paletteFab', togglePalette);
+  addButtonListener('paletteClose', closePalette);
+  
+  const overlay = document.getElementById('paletteOverlay');
+  if (overlay) {
+    overlay.addEventListener('click', closePalette);
+    overlay.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      closePalette();
+    });
+  }
+  
+  const searchInput = document.getElementById('paletteSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', handleSearch);
+    searchInput.addEventListener('change', jumpToQuestion);
+  }
+  
+  document.addEventListener('keydown', handleKeyPress);
+  
+  setInterval(saveToLocalStorage, 5000);
+  
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      updatePalette();
+    }
+  });
+}
+
+function addButtonListener(id, handler) {
+  const btn = document.getElementById(id);
+  if (btn) {
+    btn.addEventListener('click', handler);
+    btn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      handler();
+    });
+  }
+}
+
+function jumpToQuestion(e) {
+  const questionNum = parseInt(e.target.value);
+  if (questionNum >= 1 && questionNum <= questions.length) {
+    goToQuestion(questionNum - 1);
+    closePalette();
+    e.target.value = '';
+  }
+}
+
+function togglePalette() {
+  isPaletteOpen = !isPaletteOpen;
+  const palette = document.getElementById('questionPalette');
+  const overlay = document.getElementById('paletteOverlay');
+  const fab = document.getElementById('paletteFab');
+  
+  if (isPaletteOpen) {
+    palette.classList.add('active');
+    overlay.classList.add('active');
+    fab.classList.add('active');
+    fab.innerHTML = '✕<span class="badge" id="answeredBadge">' + Object.keys(answers).length + '</span>';
+    document.body.classList.add('palette-open');
+  } else {
+    closePalette();
+  }
+}
+
+function closePalette() {
+  isPaletteOpen = false;
+  const palette = document.getElementById('questionPalette');
+  const overlay = document.getElementById('paletteOverlay');
+  const fab = document.getElementById('paletteFab');
+  
+  if (palette) palette.classList.remove('active');
+  if (overlay) overlay.classList.remove('active');
+  if (fab) {
+    fab.classList.remove('active');
+    fab.innerHTML = '📋<span class="badge" id="answeredBadge">' + Object.keys(answers).length + '</span>';
+  }
+  document.body.classList.remove('palette-open');
+}
+
+function handleSearch(e) {
+  const searchTerm = e.target.value.toLowerCase();
+  if (!searchTerm) {
+    document.querySelectorAll('.palette-btn').forEach(btn => {
+      btn.style.display = '';
+    });
+    return;
+  }
+  
+  const buttons = document.querySelectorAll('.palette-btn');
+  buttons.forEach((btn, index) => {
+    const questionNum = (index + 1).toString();
+    if (questionNum.includes(searchTerm)) {
+      btn.style.display = '';
+    } else {
+      btn.style.display = 'none';
+    }
+  });
+}
+
+function handleKeyPress(e) {
+  if (document.getElementById('resultSection').classList.contains('hidden')) {
+    if (e.key === 'Escape' && isPaletteOpen) {
+      closePalette();
+    } else if (!isPaletteOpen && e.target.tagName !== 'INPUT') {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevQuestion();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        nextQuestion();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        nextQuestion();
+      } else if (e.key === 'b' || e.key === 'B') {
+        e.preventDefault();
+        toggleBookmark();
+      } else if (e.key === 'c' || e.key === 'C') {
+        e.preventDefault();
+        clearAnswer();
+      } else if (e.key === 'p' || e.key === 'P') {
+        e.preventDefault();
+        togglePalette();
+      } else if (e.key >= '1' && e.key <= '4') {
+        e.preventDefault();
+        selectOption(parseInt(e.key));
+      }
+    }
+  }
+}
+
+function selectOption(optionNum) {
+  const q = questions[currentQuestion];
+  const radio = document.querySelector(`input[name="q${q.sr_no}"][value="${optionNum}"]`);
+  if (radio) {
+    radio.checked = true;
+    const label = radio.closest('.option-label');
+    if (label) {
+      document.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+      label.classList.add('selected');
+      saveAnswer();
+    }
+  }
+}
+
+function toggleFullscreen() {
+  try {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.log('Fullscreen error:', err);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  } catch (err) {
+    console.log('Fullscreen not supported');
+  }
+}
+
+function startTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
+  timerInterval = setInterval(() => {
+    timerSeconds++;
+    updateTimer();
+    if (timerSeconds > 600) {
+      const timer = document.getElementById('timer');
+      if (timer) timer.classList.add('warning');
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const minutes = Math.floor(timerSeconds / 60);
+  const seconds = timerSeconds % 60;
+  const timer = document.getElementById('timer');
+  if (timer) {
+    timer.textContent = 
+      `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+}
+
+function createPalette() {
+  const grid = document.getElementById('paletteGrid');
+  if (!grid) return;
+  
+  grid.innerHTML = '';
+  questions.forEach((q, index) => {
+    const btn = document.createElement('button');
+    btn.textContent = index + 1;
+    btn.className = 'palette-btn';
+    btn.setAttribute('aria-label', `Go to question ${index + 1}`);
+    btn.setAttribute('type', 'button');
+    
+    btn.addEventListener('click', () => {
+      goToQuestion(index);
+      closePalette();
+    });
+    
+    btn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      goToQuestion(index);
+      closePalette();
+    });
+    
+    grid.appendChild(btn);
+  });
+  updatePalette();
+}
+
+function updatePalette() {
+  const buttons = document.querySelectorAll('.palette-btn');
+  buttons.forEach((btn, index) => {
+    btn.className = 'palette-btn';
+    if (index === currentQuestion) btn.classList.add('current');
+    if (answers[questions[index].sr_no]) btn.classList.add('answered');
+    if (bookmarks.has(questions[index].sr_no)) btn.classList.add('bookmarked');
+  });
+  
+  updatePaletteStats();
+}
+
+function updatePaletteStats() {
+  const answered = Object.keys(answers).length;
+  const unanswered = questions.length - answered;
+  const bookmarkedCount = bookmarks.size;
+  
+  const answeredEl = document.getElementById('paletteAnswered');
+  const unansweredEl = document.getElementById('paletteUnanswered');
+  const bookmarkedEl = document.getElementById('paletteBookmarked');
+  
+  if (answeredEl) answeredEl.textContent = answered;
+  if (unansweredEl) unansweredEl.textContent = unanswered;
+  if (bookmarkedEl) bookmarkedEl.textContent = bookmarkedCount;
+  
+  const badge = document.querySelector('.palette-fab .badge');
+  if (badge) badge.textContent = answered;
+}
+
+function goToQuestion(index) {
+  if (index < 0 || index >= questions.length) return;
+  saveAnswer();
+  currentQuestion = index;
+  loadQuestion(currentQuestion);
+  
+  const questionSection = document.getElementById('questionSection');
+  if (questionSection) {
+    setTimeout(() => {
+      questionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+}
+
+function loadQuestion(index) {
+  const q = questions[index];
+  
+  const questionNumber = document.getElementById('questionNumber');
+  const questionText = document.getElementById('questionText');
+  
+  if (questionNumber) {
+    questionNumber.textContent = `Question ${index + 1} of ${questions.length}`;
+  }
+  
+  if (questionText) {
+    // Render question as image if it's a URL, otherwise as text
+    questionText.innerHTML = '';
+    if (isImageURL(q.question)) {
+      const img = document.createElement('img');
+      img.src = q.question;
+      img.className = 'question-image';
+      img.alt = 'Question image';
+      img.loading = 'lazy';
+      img.onerror = function() {
+        this.style.display = 'none';
+        questionText.innerHTML = q.question;
+      };
+      questionText.appendChild(img);
+    } else {
+      questionText.innerHTML = q.question;
+    }
+  }
+  
+  const container = document.getElementById('optionsContainer');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  for (let i = 1; i <= 4; i++) {
+    const label = document.createElement('label');
+    label.className = 'option-label';
+    if (answers[q.sr_no] == i) label.classList.add('selected');
+    
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = `q${q.sr_no}`;
+    radio.value = i;
+    radio.checked = answers[q.sr_no] == i;
+    
+    const changeHandler = () => {
+      document.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+      label.classList.add('selected');
+      saveAnswer();
+    };
+    
+    radio.addEventListener('change', changeHandler);
+    label.addEventListener('click', (e) => {
+      if (e.target !== radio) {
+        radio.checked = true;
+        changeHandler();
+      }
+    });
+    
+    label.appendChild(radio);
+    
+    const optionContent = createOptionContent(q[`option${i}`]);
+    label.appendChild(optionContent);
+    
+    container.appendChild(label);
+  }
+  
+  const bookmarkBtn = document.getElementById('bookmarkBtn');
+  if (bookmarkBtn) {
+    if (bookmarks.has(q.sr_no)) {
+      bookmarkBtn.classList.add('active');
+    } else {
+      bookmarkBtn.classList.remove('active');
+    }
+  }
+  
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  
+  if (prevBtn) prevBtn.disabled = index === 0;
+  
+  if (index === questions.length - 1) {
+    if (nextBtn) nextBtn.classList.add('hidden');
+    if (submitBtn) submitBtn.classList.remove('hidden');
+  } else {
+    if (nextBtn) nextBtn.classList.remove('hidden');
+    if (submitBtn) submitBtn.classList.add('hidden');
+  }
+  
+  updateProgress();
+  updatePalette();
+}
+
+function updateMarkingInfo() {
+  const q = questions[0];
+  const markingInfo = document.getElementById('markingInfo');
+  if (markingInfo) {
+    markingInfo.textContent = `Marking: +${q.positive_marking}, -${q.negative_marking}`;
+  }
+}
+
+// UPDATED: Progress bar now shows current question number
+function updateProgress() {
+  const attempted = Object.keys(answers).length;
+  const currentProgress = ((currentQuestion + 1) / questions.length) * 100;
+  
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  const attemptedText = document.getElementById('attemptedText');
+  
+  if (progressBar) progressBar.style.width = `${currentProgress}%`;
+  if (progressText) progressText.textContent = `${currentQuestion + 1}/${questions.length}`;
+  if (attemptedText) attemptedText.textContent = attempted;
+}
+
+function saveAnswer() {
+  const q = questions[currentQuestion];
+  const selected = document.querySelector(`input[name="q${q.sr_no}"]:checked`);
+  
+  if (selected) {
+    answers[q.sr_no] = selected.value;
+  }
+  
+  updateProgress();
+  updatePalette();
+  saveToLocalStorage();
+}
+
+function clearAnswer() {
+  const q = questions[currentQuestion];
+  delete answers[q.sr_no];
+  
+  const selected = document.querySelector(`input[name="q${q.sr_no}"]:checked`);
+  if (selected) selected.checked = false;
+  
+  document.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+  
+  updateProgress();
+  updatePalette();
+  saveToLocalStorage();
+}
+
+function toggleBookmark() {
+  const q = questions[currentQuestion];
+  const btn = document.getElementById('bookmarkBtn');
+  
+  if (bookmarks.has(q.sr_no)) {
+    bookmarks.delete(q.sr_no);
+    if (btn) btn.classList.remove('active');
+  } else {
+    bookmarks.add(q.sr_no);
+    if (btn) btn.classList.add('active');
+  }
+  
+  updatePalette();
+  saveToLocalStorage();
+}
+
+function nextQuestion() {
+  saveAnswer();
+  if (currentQuestion < questions.length - 1) {
+    currentQuestion++;
+    loadQuestion(currentQuestion);
+  }
+}
+
+function prevQuestion() {
+  saveAnswer();
+  if (currentQuestion > 0) {
+    currentQuestion--;
+    loadQuestion(currentQuestion);
+  }
+}
+
+function confirmSubmit() {
+  const unattempted = questions.length - Object.keys(answers).length;
+  let message = 'Are you sure you want to submit the quiz?';
+  
+  if (unattempted > 0) {
+    message += `\n\nYou have ${unattempted} unanswered question(s).`;
+  }
+  
+  if (confirm(message)) {
+    submitQuiz();
+  }
+}
+
+function submitQuiz() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  saveAnswer();
+  closePalette();
+  
+  let correct = 0, wrong = 0, unattempted = 0, score = 0;
+  
+  questions.forEach(q => {
+    const userAns = answers[q.sr_no];
+    const posMark = parseFloat(q.positive_marking) || 0;
+    const negMark = parseFloat(q.negative_marking) || 0;
+    
+    if (!userAns) {
+      unattempted++;
+    } else if (userAns == q.answer) {
+      correct++;
+      score += posMark;
+    } else {
+      wrong++;
+      score -= negMark;
+    }
+  });
+  
+  displayResults(correct, wrong, unattempted, score);
+  
+  const fab = document.getElementById('paletteFab');
+  const nav = document.getElementById('navigation');
+  if (fab) fab.style.display = 'none';
+  if (nav) nav.style.display = 'none';
+  
+  document.body.style.paddingBottom = '20px';
+  
+  clearLocalStorage();
+}
+
+function displayResults(correct, wrong, unattempted, score) {
+  const totalQuestions = questions.length;
+  const percentage = ((correct / totalQuestions) * 100).toFixed(1);
+  const timerEl = document.getElementById('timer');
+  const timeText = timerEl ? timerEl.textContent : '00:00';
+  
+  let html = `
+    <div class="score-card">
+      <h2>${score}/${totalQuestions}</h2>
+      <p>Your Score: ${percentage}%</p>
+      <p>Time Taken: ${timeText}</p>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card correct">
+        <h3>${correct}</h3>
+        <p>Correct</p>
+      </div>
+      <div class="stat-card wrong">
+        <h3>${wrong}</h3>
+        <p>Wrong</p>
+      </div>
+      <div class="stat-card unattempted">
+        <h3>${unattempted}</h3>
+        <p>Unattempted</p>
+      </div>
+      <div class="stat-card">
+        <h3>${totalQuestions}</h3>
+        <p>Total</p>
+      </div>
+    </div>
+  `;
+  
+  questions.forEach(q => {
+    const userAns = answers[q.sr_no];
+    const questionHeader = isImageURL(q.question)
+      ? `<h4>Q${q.sr_no}:</h4><img src="${q.question}" class="question-image" alt="Question ${q.sr_no}">`
+      : `<h4>Q${q.sr_no}: ${q.question}</h4>`;
+    html += `<div class="question-review">${questionHeader}`;
+    
+    for (let i = 1; i <= 4; i++) {
+      const isCorrect = i.toString() === q.answer;
+      const isUserAnswer = userAns == i.toString();
+      
+      let className = 'review-option';
+      if (isCorrect) className += ' correct';
+      if (isUserAnswer && !isCorrect) className += ' wrong';
+      if (isUserAnswer) className += ' user-selected';
+      
+      const optionValue = q[`option${i}`];
+      
+      if (isImageURL(optionValue)) {
+        html += `<div class="${className}">
+          ${isCorrect ? '✓ ' : ''}${isUserAnswer ? '➤ ' : ''} 
+          <img src="${optionValue}" class="option-image" alt="Option ${i}">
+        </div>`;
+      } else {
+        html += `<div class="${className}">
+          ${isCorrect ? '✓ ' : ''}${isUserAnswer ? '➤ ' : ''}${optionValue}
+        </div>`;
+      }
+    }
+    
+    if (q.solution_text && q.solution_text.trim() !== '') {
+      const solutionContent = isImageURL(q.solution_text)
+        ? `<img src="${q.solution_text}" class="solution-image" alt="Solution">`
+        : q.solution_text;
+      html += `<div class="solution-section">
+        <div class="solution-label">📝 Solution:</div>
+        <div class="solution-content">${solutionContent}</div>
+      </div>`;
+    }
+    
+    html += `</div>`; // Close question-review div
+});
+  
+  html += `
+    <div class="action-buttons">
+      <button class="action-btn restart" onclick="restartQuiz()">Restart Quiz</button>
+      <button class="action-btn download" onclick="downloadResults()">Download Results</button>
+      <button class="action-btn print" onclick="window.print()">Print Results</button>
+    </div>
+  `;
+  
+  const resultSection = document.getElementById('resultSection');
+  const questionSection = document.getElementById('questionSection');
+  const progressSection = document.querySelector('.progress-section');
+  
+  if (resultSection) {
+    resultSection.innerHTML = html;
+    resultSection.classList.remove('hidden');
+  }
+  if (questionSection) questionSection.classList.add('hidden');
+  if (progressSection) progressSection.classList.add('hidden');
+  
+  const quizContainer = document.getElementById('quizContainer');
+  if (quizContainer) {
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  }
+}
+
+function restartQuiz() {
+  if (confirm('Are you sure you want to restart? All progress will be lost.')) {
+    currentQuestion = 0;
+    answers = {};
+    bookmarks.clear();
+    timerSeconds = 0;
+    
+    const resultSection = document.getElementById('resultSection');
+    const questionSection = document.getElementById('questionSection');
+    const progressSection = document.querySelector('.progress-section');
+    const fab = document.getElementById('paletteFab');
+    const nav = document.getElementById('navigation');
+    
+    if (resultSection) {
+      resultSection.classList.add('hidden');
+      resultSection.innerHTML = '';
+    }
+    if (questionSection) questionSection.classList.remove('hidden');
+    if (progressSection) progressSection.classList.remove('hidden');
+    if (fab) fab.style.display = 'flex';
+    if (nav) nav.style.display = 'grid';
+    
+    document.body.style.paddingBottom = 'var(--nav-height)';
+    
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+    startTimer();
+    
+    loadQuestion(currentQuestion);
+    createPalette();
+  }
+}
+
+function downloadResults() {
+  const resultSection = document.getElementById('resultSection');
+  if (!resultSection) return;
+  
+  const resultHTML = resultSection.innerHTML;
+  const fullHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Results - General Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; max-width: 900px; margin: 0 auto; }
+    .score-card { background: linear-gradient(135deg, #007bff, #28a745); color: white; padding: 30px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
+    .score-card h2 { font-size: 48px; margin-bottom: 10px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
+    .stat-card { background: white; padding: 20px; border-radius: 10px; text-align: center; border: 2px solid #ddd; }
+    .stat-card h3 { font-size: 32px; margin-bottom: 8px; }
+    .stat-card.correct h3 { color: #28a745; }
+    .stat-card.wrong h3 { color: #dc3545; }
+    .stat-card.unattempted h3 { color: #6c757d; }
+    .question-review { background: white; border: 2px solid #ddd; border-radius: 10px; padding: 20px; margin-bottom: 15px; }
+    .question-review h4 { margin-bottom: 15px; font-size: 16px; line-height: 1.6; }
+    .review-option { padding: 10px 15px; margin: 8px 0; border-radius: 8px; border: 2px solid #ddd; display: flex; align-items: center; gap: 10px; }
+    .option-image { max-width: 150px; max-height: 100px; border-radius: 8px; }
+    .review-option.correct { background: #d4edda; border-color: #28a745; color: #155724; }
+    .review-option.wrong { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+    .review-option.user-selected { border-width: 3px; font-weight: bold; }
+    @media print { body { background: white; } }
+    @media (max-width: 600px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <h1 style="text-align: center; color: #007bff;">General Quiz - Quiz Results</h1>
+  <p style="text-align: center; color: #666; margin-bottom: 30px;">Generated on: ${new Date().toLocaleString()}</p>
+  ${resultHTML.replace(/<div class="action-buttons">[\s\S]*?<\/div>/, '')}
+</body>
+</html>
+  `;
+  
+  try {
+    const blob = new Blob([fullHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Quiz_Results_${new Date().getTime()}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert('Download failed. Please try using the Print option instead.');
+    console.error('Download error:', err);
+  }
+}
+
+function saveToLocalStorage() {
+  try {
+    const state = {
+      currentQuestion,
+      answers,
+      bookmarks: Array.from(bookmarks),
+      timerSeconds,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (err) {
+    console.error('Save error:', err);
+  }
+}
+
+function loadFromLocalStorage() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const state = JSON.parse(saved);
+      const hasProgress = (state && (
+        (state.currentQuestion && state.currentQuestion > 0) ||
+        (state.answers && Object.keys(state.answers).length > 0) ||
+        (state.timerSeconds && state.timerSeconds > 0)
+      ));
+      if (hasProgress && (Date.now() - state.timestamp < 24 * 60 * 60 * 1000)) {
+        if (confirm('Resume previous quiz session?')) {
+          currentQuestion = state.currentQuestion || 0;
+          answers = state.answers || {};
+          bookmarks = new Set(state.bookmarks || []);
+          timerSeconds = state.timerSeconds || 0;
+          updateTimer();
+          loadQuestion(currentQuestion);
+        }
+      } else {
+        clearLocalStorage();
+      }
+    }
+  } catch (err) {
+    console.error('Load error:', err);
+    clearLocalStorage();
+  }
+}
+
+function clearLocalStorage() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (err) {
+    console.error('Clear storage error:', err);
+  }
+}
+
+window.addEventListener('beforeunload', (e) => {
+  const resultSection = document.getElementById('resultSection');
+  if (resultSection && !resultSection.classList.contains('hidden')) {
+    return;
+  }
+  e.preventDefault();
+  e.returnValue = '';
+});
+
+window.addEventListener('unload', () => {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
+});
+</script>
+</body>
+</html>

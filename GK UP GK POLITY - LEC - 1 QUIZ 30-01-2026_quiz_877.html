@@ -1,0 +1,2396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>General Quiz -  - Fixed Navigation</title>
+<style>
+:root {
+  --primary-color: #007bff;
+  --primary-hover: #0069d9;
+  --success-color: #28a745;
+  --success-hover: #218838;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --secondary-color: #6c757d;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --border-color: #dee2e6;
+  --shadow: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
+  --overlay: rgba(0,0,0,0.5);
+  --nav-height: 80px;
+}
+
+[data-theme="dark"] {
+  --primary-color: #4dabf7;
+  --primary-hover: #339af0;
+  --success-color: #51cf66;
+  --success-hover: #40c057;
+  --danger-color: #ff6b6b;
+  --warning-color: #ffd43b;
+  --secondary-color: #868e96;
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #404040;
+  --text-primary: #f8f9fa;
+  --text-secondary: #adb5bd;
+  --border-color: #495057;
+  --shadow: 0 4px 6px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.4);
+  --overlay: rgba(0,0,0,0.7);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
+  position: relative;
+  padding-bottom: var(--nav-height);
+}
+
+body.palette-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-primary);
+  padding: 20px 30px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.header h1 {
+  font-size: 28px;
+  color: var(--primary-color);
+  font-weight: 700;
+  user-select: none;
+}
+
+.header-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.theme-toggle, .fullscreen-btn {
+  background: var(--bg-tertiary);
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.3s;
+  min-width: 44px;
+  min-height: 44px;
+  user-select: none;
+}
+
+.theme-toggle:active, .fullscreen-btn:active {
+  transform: scale(0.95);
+}
+
+.theme-toggle:hover, .fullscreen-btn:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+.timer {
+  background: var(--warning-color);
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 18px;
+  min-width: 100px;
+  text-align: center;
+  user-select: none;
+}
+
+.timer.warning {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.palette-fab {
+  position: fixed;
+  bottom: calc(var(--nav-height) + 20px);
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  box-shadow: 0 6px 20px rgba(0,123,255,0.4);
+  transition: all 0.3s ease;
+  z-index: 998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.palette-fab:active {
+  transform: scale(0.9);
+}
+
+.palette-fab:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0,123,255,0.6);
+}
+
+.palette-fab.active {
+  background: var(--danger-color);
+}
+
+.palette-fab .badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--success-color);
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg-secondary);
+  pointer-events: none;
+}
+.solution-section {
+  margin-top: 20px;
+  padding: 15px;
+  background: #e7f3ff;
+  border-left: 4px solid var(--primary-color);
+  border-radius: 8px;
+}
+
+.solution-label {
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.solution-content {
+  line-height: 1.6;
+  color: #333;
+}
+
+.solution-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+.palette-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--overlay);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 999;
+  touch-action: none;
+}
+
+.palette-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.question-palette {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  max-width: 450px;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--bg-primary);
+  box-shadow: -5px 0 20px rgba(0,0,0,0.2);
+  transition: right 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.question-palette.active {
+  right: 0;
+}
+
+.palette-header {
+  padding: 20px;
+  background: var(--primary-color);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.palette-header h3 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.palette-close {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 32px;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.2s;
+  line-height: 1;
+  touch-action: manipulation;
+}
+
+.palette-close:active {
+  transform: scale(0.9);
+}
+
+.palette-close:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.palette-stats {
+  padding: 15px 20px;
+  background: var(--bg-tertiary);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  font-size: 13px;
+  text-align: center;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border-color);
+  user-select: none;
+}
+
+.palette-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.palette-stat .number {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.palette-stat.answered .number { color: var(--success-color); }
+.palette-stat.unanswered .number { color: var(--secondary-color); }
+.palette-stat.bookmarked .number { color: var(--warning-color); }
+
+.palette-search {
+  padding: 15px 20px;
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+.palette-search input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.palette-search input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.palette-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+}
+
+.palette-btn {
+  aspect-ratio: 1;
+  border: 2px solid var(--border-color);
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+  min-width: 40px;
+  min-height: 40px;
+  color: var(--text-primary);
+  position: relative;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.palette-btn:active {
+  transform: scale(0.9);
+}
+
+.palette-btn:hover {
+  transform: scale(1.1);
+  z-index: 10;
+  box-shadow: var(--shadow);
+}
+
+.palette-btn.current {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  animation: currentPulse 2s infinite;
+}
+
+@keyframes currentPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,123,255,0.7); }
+  50% { box-shadow: 0 0 0 8px rgba(0,123,255,0); }
+}
+
+.palette-btn.answered {
+  background: var(--success-color);
+  color: white;
+  border-color: var(--success-color);
+}
+
+.palette-btn.bookmarked::after {
+  content: '🔖';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.palette-btn.bookmarked.answered {
+  background: var(--success-color);
+}
+
+.palette-legend {
+  padding: 20px;
+  border-top: 1px solid var(--border-color);
+  font-size: 13px;
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.legend-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-color {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.quiz-container {
+  background: var(--bg-primary);
+  border-radius: 15px;
+  box-shadow: var(--shadow-lg);
+  padding: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+  scroll-margin-top: 20px;
+}
+
+.quiz-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.marking-info {
+  display: inline-block;
+  background: var(--bg-tertiary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.progress-section {
+  margin-bottom: 25px;
+}
+
+.progress-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.progress-bar-container {
+  background: var(--bg-tertiary);
+  border-radius: 12px;
+  overflow: hidden;
+  height: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+  transition: width 0.4s ease;
+  border-radius: 12px;
+}
+
+.question-section {
+  min-height: 300px;
+  scroll-margin-top: 80px;
+  margin-bottom: 20px;
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.question-number {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary-color);
+  user-select: none;
+}
+
+.bookmark-btn {
+  background: transparent;
+  border: 2px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.bookmark-btn:active {
+  transform: scale(0.95);
+}
+
+.bookmark-btn.active {
+  background: var(--warning-color);
+  border-color: var(--warning-color);
+  color: #000;
+}
+
+.question {
+  font-size: 18px;
+  line-height: 1.7;
+  margin-bottom: 25px;
+  color: var(--text-primary);
+  user-select: text;
+}
+
+.question-image {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 10px;
+  object-fit: contain;
+  background: var(--bg-primary);
+  padding: 10px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.option-label {
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--border-color);
+  padding: 16px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--bg-secondary);
+  min-height: 60px;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.option-label:active {
+  transform: scale(0.98);
+}
+
+.option-label:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--primary-color);
+}
+
+.option-label.selected {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+.option-label input[type="radio"] {
+  margin-right: 15px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.option-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.option-image {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: var(--bg-primary);
+  padding: 10px;
+}
+
+.option-label.selected .option-image {
+  background: rgba(255,255,255,0.1);
+}
+
+/* FIXED NAVIGATION - KEY UPDATE */
+.navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-primary);
+  border-top: 2px solid var(--border-color);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+  z-index: 997;
+  padding: 15px 20px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 10px;
+  max-width: 100%;
+}
+
+.nav-btn {
+  padding: 14px 20px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+}
+
+.nav-btn:active {
+  transform: scale(0.97);
+}
+
+.nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.nav-btn.prev {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.nav-btn.prev:hover:not(:disabled) {
+  background: #5a6268;
+}
+
+.nav-btn.next {
+  background: var(--primary-color);
+  color: white;
+}
+
+.nav-btn.next:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.nav-btn.clear {
+  background: var(--danger-color);
+  color: white;
+}
+
+.nav-btn.clear:hover {
+  background: #c82333;
+}
+
+.nav-btn.submit {
+  background: var(--success-color);
+  color: white;
+  grid-column: 1 / -1;
+}
+
+.nav-btn.submit:hover {
+  background: var(--success-hover);
+}
+
+.result-section {
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.score-card {
+  background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+  color: white;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  margin-bottom: 30px;
+  user-select: none;
+}
+
+.score-card h2 {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.score-card p {
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: var(--bg-secondary);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  border: 2px solid var(--border-color);
+  user-select: none;
+}
+
+.stat-card h3 {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.stat-card.correct h3 { color: var(--success-color); }
+.stat-card.wrong h3 { color: var(--danger-color); }
+.stat-card.unattempted h3 { color: var(--secondary-color); }
+
+.question-review {
+  border: 2px solid var(--border-color);
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 20px;
+  background: var(--bg-secondary);
+}
+
+.question-review h4 {
+  margin-bottom: 15px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.review-option {
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  border: 2px solid var(--border-color);
+  background: var(--bg-primary);
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.review-option .option-image {
+  max-width: 150px;
+  max-height: 100px;
+}
+
+.review-option.correct {
+  background: #d4edda;
+  border-color: var(--success-color);
+  color: #155724;
+}
+
+.review-option.wrong {
+  background: #f8d7da;
+  border-color: var(--danger-color);
+  color: #721c24;
+}
+
+.review-option.user-selected {
+  border-width: 3px;
+  font-weight: 600;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.action-btn {
+  padding: 14px 30px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  min-width: 150px;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.action-btn.restart {
+  background: var(--danger-color);
+  color: white;
+}
+
+.action-btn.restart:hover {
+  background: #c82333;
+}
+
+.action-btn.download {
+  background: var(--primary-color);
+  color: white;
+}
+
+.action-btn.download:hover {
+  background: var(--primary-hover);
+}
+
+.action-btn.print {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.action-btn.print:hover {
+  background: #5a6268;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.palette-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.palette-content::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+}
+
+.palette-content::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+.palette-content::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-hover);
+}
+
+@media (max-width: 768px) {
+  :root {
+    --nav-height: 140px;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+  }
+
+  .quiz-container {
+    padding: 20px 15px;
+  }
+
+  .question-palette {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .palette-grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+  }
+
+  .palette-btn {
+    font-size: 13px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .palette-fab {
+    bottom: calc(var(--nav-height) + 10px);
+    right: 15px;
+    width: 56px;
+    height: 56px;
+    font-size: 22px;
+  }
+
+  .navigation {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px 15px;
+  }
+
+  .nav-btn {
+    min-height: 44px;
+    font-size: 15px;
+  }
+
+  .nav-btn.clear {
+    order: 3;
+  }
+
+  .nav-btn.submit {
+    grid-column: auto;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .legend-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .question {
+    font-size: 16px;
+  }
+
+  .option-label {
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+
+  .option-image {
+    max-height: 150px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .palette-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .palette-btn {
+    font-size: 12px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  .timer {
+    font-size: 16px;
+    padding: 8px 16px;
+  }
+
+  .option-image {
+    max-height: 120px;
+  }
+}
+
+@media (max-width: 360px) {
+  .palette-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media print {
+  .header-controls, .navigation, .palette-fab, .palette-overlay, .question-palette, .action-buttons, .bookmark-btn {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    padding-bottom: 0;
+  }
+
+  .container {
+    padding-bottom: 20px;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .palette-fab {
+    bottom: calc(var(--nav-height) + 5px);
+    right: 10px;
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  .palette-fab .badge {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>General Quiz - </h1>
+    <div class="header-controls">
+      <div class="timer" id="timer">00:00</div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle Theme">🌙</button>
+      <button class="fullscreen-btn" id="fullscreenBtn" aria-label="Toggle fullscreen" title="Fullscreen">⛶</button>
+    </div>
+  </div>
+
+  <div class="quiz-container" id="quizContainer">
+    <div class="quiz-header">
+      <div class="marking-info" id="markingInfo">Marking: +1, -0</div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-stats">
+        <span>Progress: <strong id="progressText">1/2</strong></span>
+        <span>Attempted: <strong id="attemptedText">0</strong></span>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+
+    <div class="question-section" id="questionSection">
+      <div class="question-header">
+        <div class="question-number" id="questionNumber">Question 1 of 2</div>
+        <button class="bookmark-btn" id="bookmarkBtn" aria-label="Bookmark question">
+          <span>🔖</span> <span>Bookmark</span>
+        </button>
+      </div>
+      
+      <div class="question" id="questionText"></div>
+      
+      <div class="options" id="optionsContainer"></div>
+    </div>
+
+    <div class="result-section hidden" id="resultSection"></div>
+  </div>
+</div>
+
+<!-- FIXED NAVIGATION BAR -->
+<div class="navigation" id="navigation">
+  <button class="nav-btn prev" id="prevBtn" aria-label="Previous question">
+    <span>←</span> Previous
+  </button>
+  <button class="nav-btn clear" id="clearBtn" aria-label="Clear answer">
+    Clear
+  </button>
+  <button class="nav-btn next" id="nextBtn" aria-label="Next question">
+    Next <span>→</span>
+  </button>
+  <button class="nav-btn submit hidden" id="submitBtn" aria-label="Submit quiz">
+    Submit Quiz
+  </button>
+</div>
+
+<button class="palette-fab" id="paletteFab" aria-label="Toggle question palette" title="Question Palette (P)">
+  📋
+  <span class="badge" id="answeredBadge">0</span>
+</button>
+
+<div class="palette-overlay" id="paletteOverlay"></div>
+
+<div class="question-palette" id="questionPalette">
+  <div class="palette-header">
+    <h3>Question Palette</h3>
+    <button class="palette-close" id="paletteClose" aria-label="Close palette">×</button>
+  </div>
+
+  <div class="palette-stats">
+    <div class="palette-stat answered">
+      <div class="number" id="paletteAnswered">0</div>
+      <div>Answered</div>
+    </div>
+    <div class="palette-stat unanswered">
+      <div class="number" id="paletteUnanswered">2</div>
+      <div>Not Answered</div>
+    </div>
+    <div class="palette-stat bookmarked">
+      <div class="number" id="paletteBookmarked">0</div>
+      <div>Bookmarked</div>
+    </div>
+  </div>
+
+  <div class="palette-search">
+    <input type="number" id="paletteSearch" placeholder="Jump to question number..." aria-label="Search questions" inputmode="numeric" pattern="[0-9]*">
+  </div>
+
+  <div class="palette-content">
+    <div class="palette-grid" id="paletteGrid"></div>
+  </div>
+
+  <div class="palette-legend">
+    <div class="legend-grid">
+      <div class="legend-item">
+        <div class="legend-color" style="background: var(--success-color);"></div>
+        <span>Answered</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: var(--bg-secondary); border: 2px solid var(--border-color);"></div>
+        <span>Not Answered</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: var(--primary-color);"></div>
+        <span>Current Question</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: var(--warning-color);"></div>
+        <span>🔖 Bookmarked</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    "sr_no": 1,
+    "question": "<p> <b>Uttar Pradesh was renamed from United Provinces on which date? / </b>उत्तर प्रदेश का नाम संयुक्त प्रांत से बदलकर उत्तर प्रदेश किस तिथि को रखा गया<b>?</b></p>",
+    "option1": "<p> 1 April 1937</p>",
+    "option2": "<p> 26 January 1950</p>",
+    "option3": "<p> 24 January 1950</p>",
+    "option4": "<p> 1 November 1956</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> Uttar Pradesh was renamed from United Provinces on 24 January 1950, which is celebrated as UP Foundation Day / 24 जनवरी 1950 को संयुक्त प्रांत का नाम बदलकर उत्तर प्रदेश रखा गया, जिसे UP स्थापना दिवस कहा जाता है।</p>"
+  },
+  {
+    "sr_no": 2,
+    "question": "<p> <b>How many districts are there in Uttar Pradesh at present? / </b>वर्तमान में उत्तर प्रदेश में कितने जिले हैं<b>?</b></p>",
+    "option1": "<p> 72</p>",
+    "option2": "<p> 73</p>",
+    "option3": "<p> 74</p>",
+    "option4": "<p> 75</p>",
+    "answer": "4",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> At present, Uttar Pradesh has 18 divisions and 75 districts, reflecting its current administrative structure / वर्तमान में उत्तर प्रदेश में 18 मंडल और 75 जिले हैं, जो राज्य की वर्तमान प्रशासनिक संरचना को दर्शाते हैं।</p>"
+  },
+  {
+    "sr_no": 3,
+    "question": "<p> <b>Under which Article is the Governor of a State appointed by the President? / </b>राज्यपाल की नियुक्ति राष्ट्रपति द्वारा किस अनुच्छेद के अंतर्गत की जाती है<b>?</b></p>",
+    "option1": "<p> Article 153 / अनुच्छेद 153</p>",
+    "option2": "<p> Article 154 / अनुच्छेद 154</p>",
+    "option3": "<p> Article 155 / अनुच्छेद 155</p>",
+    "option4": "<p> Article 161 / अनुच्छेद 161</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The Governor is appointed by the President under Article 155 / अनुच्छेद 155 के अंतर्गत राज्यपाल की नियुक्ति राष्ट्रपति द्वारा की जाती है।</p>"
+  },
+  {
+    "sr_no": 4,
+    "question": "<p> <b>Who was the first Chief Minister of Uttar Pradesh after Independence? / </b>स्वतंत्रता के बाद उत्तर प्रदेश के प्रथम मुख्यमंत्री कौन थे<b>?</b></p>",
+    "option1": "<p> Sampurnanand / सम्पूर्णानंद</p>",
+    "option2": "<p> Govind Ballabh Pant / गोविंद बल्लभ पंत</p>",
+    "option3": "<p> Chandra Bhanu Gupta / चंद्र भानु गुप्ता</p>",
+    "option4": "<p> Sucheta Kriplani / सुचेता कृपलानी</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> Govind Ballabh Pant became the first Chief Minister of Uttar Pradesh on 26 January 1950 / गोविंद बल्लभ पंत 26 जनवरी 1950 को उत्तर प्रदेश के पहले मुख्यमंत्री बने।</p>"
+  },
+  {
+    "sr_no": 5,
+    "question": "<p> <b>The following statements regarding the Governor of Uttar Pradesh / </b>उत्तर प्रदेश के राज्यपाल के संबंध में निम्न कथनों पर विचार कीजिए<b>:<br/> 1. The Governor is the constitutional head of the State. / </b>राज्यपाल राज्य का संवैधानिक प्रमुख होता है।<b><br/> 2. The Governor can pardon a death sentence. / </b>राज्यपाल मृत्युदंड की क्षमा दे सकता है।<b><br/> 3. The Governor appoints the Advocate General. / </b>राज्यपाल महाधिवक्ता की नियुक्ति करता है।<b><br/> Which of the above statements is/are correct? / </b>उपरोक्त में से कौन<b>-</b>सा<b>/</b>से कथन सही है<b>/</b>हैं<b>?</b></p>",
+    "option1": "<p> 1 and 3 only / केवल 1 और 3</p>",
+    "option2": "<p> 2 only / केवल 2</p>",
+    "option3": "<p> 1 and 2 only / केवल 1 और 2</p>",
+    "option4": "<p> 1, 2 and 3 / 1, 2 और 3</p>",
+    "answer": "1",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The Governor is the constitutional head and appoints the Advocate General, but cannot pardon a death sentence as this power lies with the President / राज्यपाल संवैधानिक प्रमुख होता है और महाधिवक्ता की नियुक्ति करता है, लेकिन मृत्युदंड की क्षमा का अधिकार राष्ट्रपति के पास होता है।</p>"
+  },
+  {
+    "sr_no": 6,
+    "question": "<p> <b>Match the following Governors of Uttar Pradesh with their tenure / </b>निम्नलिखित राज्यपालों को उनके कार्यकाल से सुमेलित कीजिए<b>:<br/> List-I<br/> 1. Sarojini Naidu / </b>सरोजिनी नायडू<b><br/> 2. V. V. Giri / </b>वी<b>. </b>वी<b>. </b>गिरी<b><br/> 3. Ram Naik / </b>राम नाईक<b><br/> 4. Anandiben Patel / </b>आनंदीबेन पटेल<b><br/> List-II<br/> A. 1957–1960<br/> B. 1947–1949<br/> C. 2014–2019<br/> D. 2019–Present</b></p>",
+    "option1": "<p> 1-B, 2-A, 3-C, 4-D</p>",
+    "option2": "<p> 1-A, 2-B, 3-D, 4-C</p>",
+    "option3": "<p> 1-B, 2-C, 3-A, 4-D</p>",
+    "option4": "<p> 1-D, 2-A, 3-C, 4-B</p>",
+    "answer": "1",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> Sarojini Naidu (1947–49), V. V. Giri (1957–60), Ram Naik (2014–19) and Anandiben Patel (2019–Present) served as Governors in the given periods / सरोजिनी नायडू, वी. वी. गिरी, राम नाईक और आनंदीबेन पटेल के कार्यकाल का यह सही मिलान है।</p>"
+  },
+  {
+    "sr_no": 7,
+    "question": "<p> <b>How many members are there in the Uttar Pradesh Legislative Assembly? / </b>उत्तर प्रदेश विधानसभा में कुल कितने सदस्य हैं<b>?</b></p>",
+    "option1": "<p> 400</p>",
+    "option2": "<p> 402</p>",
+    "option3": "<p> 403</p>",
+    "option4": "<p> 405</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The Uttar Pradesh Legislative Assembly has 403 elected members, the largest among Indian states / उत्तर प्रदेश विधानसभा में 403 निर्वाचित सदस्य हैं, जो इसे भारत की सबसे बड़ी विधानसभा बनाता है।</p>"
+  },
+  {
+    "sr_no": 8,
+    "question": "<p> <b>The Uttar Pradesh Legislative Council came into existence under which Act? / </b>उत्तर प्रदेश विधान परिषद का गठन किस अधिनियम के अंतर्गत हुआ<b>?</b></p>",
+    "option1": "<p> Government of India Act, 1919</p>",
+    "option2": "<p> Government of India Act, 1935</p>",
+    "option3": "<p> Indian Councils Act, 1909</p>",
+    "option4": "<p> Government of India Act, 1947</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The Legislative Council of Uttar Pradesh was established under the Government of India Act, 1935 and came into existence in 1937 / उत्तर प्रदेश विधान परिषद की स्थापना भारत सरकार अधिनियम 1935 के अंतर्गत हुई और यह 1937 में अस्तित्व में आई।</p>"
+  },
+  {
+    "sr_no": 9,
+    "question": "<p> <b>What is the minimum age to contest election for the Vidhan Parishad? / </b>विधान परिषद के लिए चुनाव लड़ने की न्यूनतम आयु क्या है<b>?</b></p>",
+    "option1": "<p> 25 years</p>",
+    "option2": "<p> 28 years</p>",
+    "option3": "<p> 30 years</p>",
+    "option4": "<p> 35 years</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The minimum age to become a member of the Vidhan Parishad is 30 years / विधान परिषद का सदस्य बनने के लिए न्यूनतम आयु 30 वर्ष निर्धारित है।</p>"
+  },
+  {
+    "sr_no": 10,
+    "question": "<p> <b>Consider the following statements regarding the Vidhan Parishad of Uttar Pradesh / </b>उत्तर प्रदेश की विधान परिषद के संबंध में निम्न कथनों पर विचार कीजिए<b>:<br/> 1. It is a permanent House. / </b>यह एक स्थायी सदन है।<b><br/> 2. One-third members retire every two years. / </b>प्रत्येक दो वर्ष में एक<b>-</b>तिहाई सदस्य सेवानिवृत्त होते हैं।<b><br/> 3. The total strength is 100 members. / </b>कुल सदस्य संख्या <b>100 </b>है।<b><br/> Which of the above statements are correct? / </b>उपरोक्त में से कौन<b>-</b>से कथन सही हैं<b>?</b></p>",
+    "option1": "<p> 1 and 2 only</p>",
+    "option2": "<p> 2 and 3 only</p>",
+    "option3": "<p> 1 and 3 only</p>",
+    "option4": "<p> 1, 2 and 3</p>",
+    "answer": "4",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The Vidhan Parishad is a permanent House with one-third members retiring every two years and a total strength of 100 members / विधान परिषद एक स्थायी सदन है, जिसमें प्रत्येक दो वर्ष में एक-तिहाई सदस्य सेवानिवृत्त होते हैं और कुल सदस्य संख्या 100 है।</p>"
+  },
+  {
+    "sr_no": 11,
+    "question": "<p> <b>Where is the Secretariat of Uttar Pradesh located? / </b>उत्तर प्रदेश का सचिवालय कहाँ स्थित है<b>?</b></p>",
+    "option1": "<p> Prayagraj / प्रयागराज</p>",
+    "option2": "<p> Kanpur / कानपुर</p>",
+    "option3": "<p> Lucknow / लखनऊ</p>",
+    "option4": "<p> Varanasi / वाराणसी</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The Secretariat of Uttar Pradesh is located at Lucknow, the administrative capital of the state / उत्तर प्रदेश का सचिवालय लखनऊ में स्थित है, जो राज्य की प्रशासनिक राजधानी है।</p>"
+  },
+  {
+    "sr_no": 12,
+    "question": "<p> <b>Who is the administrative head of the Uttar Pradesh Secretariat? / </b>उत्तर प्रदेश सचिवालय का प्रशासनिक प्रमुख कौन होता है<b>?</b></p>",
+    "option1": "<p> Governor / राज्यपाल</p>",
+    "option2": "<p> Chief Minister / मुख्यमंत्री</p>",
+    "option3": "<p> Chief Secretary / मुख्य सचिव</p>",
+    "option4": "<p> Home Secretary / गृह सचिव</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The Chief Secretary is the administrative head of the Secretariat and the senior-most IAS officer of the state / मुख्य सचिव सचिवालय का प्रशासनिक प्रमुख और राज्य का सबसे वरिष्ठ IAS अधिकारी होता है।</p>"
+  },
+  {
+    "sr_no": 13,
+    "question": "<p> <b>How many Lok Sabha seats are allotted to Uttar Pradesh? / </b>उत्तर प्रदेश को लोकसभा में कितनी सीटें आवंटित हैं<b>?</b></p>",
+    "option1": "<p> 75</p>",
+    "option2": "<p> 78</p>",
+    "option3": "<p> 80</p>",
+    "option4": "<p> 82</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> Uttar Pradesh has 80 Lok Sabha seats, the highest among all states / उत्तर प्रदेश को लोकसभा में 80 सीटें प्राप्त हैं, जो सभी राज्यों में सर्वाधिक हैं।</p>"
+  },
+  {
+    "sr_no": 14,
+    "question": "<p> <b>How many Rajya Sabha seats are allotted to Uttar Pradesh? / </b>उत्तर प्रदेश को राज्यसभा में कितनी सीटें प्राप्त हैं<b>?</b></p>",
+    "option1": "<p> 30</p>",
+    "option2": "<p> 31</p>",
+    "option3": "<p> 32</p>",
+    "option4": "<p> 34</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> Uttar Pradesh is allotted 31 Rajya Sabha seats / उत्तर प्रदेश को राज्यसभा में 31 सीटें आवंटित हैं।</p>"
+  },
+  {
+    "sr_no": 15,
+    "question": "<p> <b>Consider the following statements regarding the Chief Minister of Uttar Pradesh / </b>उत्तर प्रदेश के मुख्यमंत्री के संबंध में निम्न कथनों पर विचार कीजिए<b>:<br/> 1. The Chief Minister is appointed by the Governor. / </b>मुख्यमंत्री की नियुक्ति राज्यपाल करता है।<b><br/> 2. The tenure of the Chief Minister is fixed for five years. / </b>मुख्यमंत्री का कार्यकाल निश्चित रूप से पाँच वर्ष का होता है।<b><br/> 3. The Chief Minister must resign if he loses majority. / </b>बहुमत खोने पर मुख्यमंत्री को त्यागपत्र देना होता है।<b><br/> Which of the above statements is/are correct? / </b>उपरोक्त में से कौन<b>-</b>सा<b>/</b>से कथन सही है<b>/</b>हैं<b>?</b></p>",
+    "option1": "<p> 1 and 3 only</p>",
+    "option2": "<p> 1 only</p>",
+    "option3": "<p> 2 and 3 only</p>",
+    "option4": "<p> 1, 2 and 3</p>",
+    "answer": "1",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The Chief Minister is appointed by the Governor and must resign on losing majority, but the tenure is not fixed / मुख्यमंत्री की नियुक्ति राज्यपाल करता है और बहुमत खोने पर त्यागपत्र देना होता है, लेकिन कार्यकाल निश्चित नहीं होता।</p>"
+  },
+  {
+    "sr_no": 16,
+    "question": "<p> <b>Match the following Chief Ministers of Uttar Pradesh with the correct facts / </b>निम्नलिखित मुख्यमंत्रियों को सही तथ्यों से सुमेलित कीजिए<b>:<br/> List-I<br/> 1. Govind Ballabh Pant / </b>गोविंद बल्लभ पंत<b><br/> 2. Sucheta Kriplani / </b>सुचेता कृपलानी<b><br/> 3. Mayawati / </b>मायावती<b><br/> 4. Yogi Adityanath / </b>योगी आदित्यनाथ<b><br/> List-II<br/> A. First woman Chief Minister<br/> B. First CM after Independence<br/> C. Dalit woman Chief Minister<br/> D. Current Chief Minister</b></p>",
+    "option1": "<p> 1-B, 2-A, 3-C, 4-D</p>",
+    "option2": "<p> 1-A, 2-B, 3-D, 4-C</p>",
+    "option3": "<p> 1-C, 2-A, 3-B, 4-D</p>",
+    "option4": "<p> 1-B, 2-D, 3-C, 4-A</p>",
+    "answer": "1",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> Govind Ballabh Pant was the first CM after Independence, Sucheta Kriplani the first woman CM, Mayawati a Dalit woman CM and Yogi Adityanath the current CM / यह मिलान उत्तर प्रदेश के मुख्यमंत्रियों के प्रमुख तथ्यों पर आधारित है।</p>"
+  },
+  {
+    "sr_no": 17,
+    "question": "<p> <b>How many times has President’s Rule been imposed in Uttar Pradesh? / </b>उत्तर प्रदेश में अब तक कितनी बार राष्ट्रपति शासन लगाया गया है<b>?</b></p>",
+    "option1": "<p> 8</p>",
+    "option2": "<p> 9</p>",
+    "option3": "<p> 10</p>",
+    "option4": "<p> 11</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> President’s Rule has been imposed 10 times in Uttar Pradesh, first in February 1968 / उत्तर प्रदेश में अब तक 10 बार राष्ट्रपति शासन लगाया गया है, पहली बार फरवरी 1968 में।</p>"
+  },
+  {
+    "sr_no": 18,
+    "question": "<p> <b>Who was the first Speaker of the Uttar Pradesh Legislative Assembly after Independence? / </b>स्वतंत्रता के बाद उत्तर प्रदेश विधानसभा के पहले अध्यक्ष कौन थे<b>?</b></p>",
+    "option1": "<p> Purushottam Das Tandon</p>",
+    "option2": "<p> Atmaram Govind Kher</p>",
+    "option3": "<p> Satish Mahana</p>",
+    "option4": "<p> Kamalapati Tripathi</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> Atmaram Govind Kher became the first Speaker of the Uttar Pradesh Legislative Assembly after Independence / आत्माराम गोविंद खेर स्वतंत्रता के बाद उत्तर प्रदेश विधानसभा के पहले अध्यक्ष बने।</p>"
+  },
+  {
+    "sr_no": 19,
+    "question": "<p> <b>What is the minimum age to contest election for the Vidhan Sabha? / </b>विधानसभा के लिए चुनाव लड़ने की न्यूनतम आयु क्या है<b>?</b></p>",
+    "option1": "<p> 21 years</p>",
+    "option2": "<p> 25 years</p>",
+    "option3": "<p> 30 years</p>",
+    "option4": "<p> 35 years</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The minimum age to contest Vidhan Sabha election is 25 years / विधानसभा चुनाव के लिए न्यूनतम आयु 25 वर्ष है।</p>"
+  },
+  {
+    "sr_no": 20,
+    "question": "<p> <b>Consider the following statements regarding the Uttar Pradesh Public Service Commission / </b>उत्तर प्रदेश लोक सेवा आयोग के संबंध में निम्न कथनों पर विचार कीजिए<b>:<br/> 1. It was established on 1 April 1937. / </b>इसकी स्थापना <b>1 </b>अप्रैल <b>1937 </b>को हुई।<b><br/> 2. Its headquarters is at Prayagraj. / </b>इसका मुख्यालय प्रयागराज में है।<b><br/> 3. The current Chairperson is Sanjay Srinet. / </b>वर्तमान अध्यक्ष संजय श्रीनेत हैं।<b><br/> Which of the above statements are correct? / </b>उपरोक्त में से कौन<b>-</b>से कथन सही हैं<b>?</b></p>",
+    "option1": "<p> 1 and 3 only</p>",
+    "option2": "<p> 2 and 3 only</p>",
+    "option3": "<p> 1 and 2 only</p>",
+    "option4": "<p> 1, 2 and 3</p>",
+    "answer": "4",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> UPPSC was established on 1 April 1937, its headquarters is at Prayagraj and the current Chairperson is Sanjay Srinet / उत्तर प्रदेश लोक सेवा आयोग की स्थापना 1 अप्रैल 1937 को हुई, मुख्यालय प्रयागराज में है और वर्तमान अध्यक्ष संजय श्रीनेत हैं।</p>"
+  },
+  {
+    "sr_no": 21,
+    "question": "<p> <b>How many members of the Vidhan Parishad are nominated by the Governor? / </b>विधान परिषद में राज्यपाल द्वारा कितने सदस्य नामित किए जाते हैं<b>?</b></p>",
+    "option1": "<p> 8</p>",
+    "option2": "<p> 10</p>",
+    "option3": "<p> 12</p>",
+    "option4": "<p> 14</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The Governor nominates 10 members to the Vidhan Parishad from persons with special knowledge or experience / राज्यपाल विधान परिषद में विशेष ज्ञान या अनुभव वाले 10 सदस्यों को नामित करता है।</p>"
+  },
+  {
+    "sr_no": 22,
+    "question": "<p> <b>Which district has the highest number of Assembly seats in Uttar Pradesh? / </b>उत्तर प्रदेश में सर्वाधिक विधानसभा सीटें किस जिले में हैं<b>?</b></p>",
+    "option1": "<p> Lucknow / लखनऊ</p>",
+    "option2": "<p> Kanpur / कानपुर</p>",
+    "option3": "<p> Prayagraj / प्रयागराज</p>",
+    "option4": "<p> Varanasi / वाराणसी</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> Prayagraj district has the highest number of Assembly seats, i.e. 12 seats / प्रयागराज जिले में सर्वाधिक 12 विधानसभा सीटें हैं।</p>"
+  },
+  {
+    "sr_no": 23,
+    "question": "<p> <b>Under which Article can the Legislative Council be created or abolished? / </b>विधान परिषद का गठन या उन्मूलन किस अनुच्छेद के अंतर्गत किया जा सकता है<b>?</b></p>",
+    "option1": "<p> Article 168 / अनुच्छेद 168</p>",
+    "option2": "<p> Article 169 / अनुच्छेद 169</p>",
+    "option3": "<p> Article 170 / अनुच्छेद 170</p>",
+    "option4": "<p> Article 171 / अनुच्छेद 171</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> Creation or abolition of the Legislative Council is provided under Article 169 / विधान परिषद का गठन या उन्मूलन अनुच्छेद 169 के अंतर्गत किया जा सकता है।</p>"
+  },
+  {
+    "sr_no": 24,
+    "question": "<p> <b>Which commission in Uttar Pradesh was constituted under the Protection of Human Rights Act, 1993? / </b>उत्तर प्रदेश में कौन<b>-</b>सा आयोग मानवाधिकार संरक्षण अधिनियम <b>1993 </b>के अंतर्गत गठित हुआ<b>?</b></p>",
+    "option1": "<p> UP Information Commission</p>",
+    "option2": "<p> UP Women Commission</p>",
+    "option3": "<p> UP Human Rights Commission</p>",
+    "option4": "<p> UPPSC</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The Uttar Pradesh Human Rights Commission was constituted under the Protection of Human Rights Act, 1993 / उत्तर प्रदेश मानवाधिकार आयोग का गठन मानवाधिकार संरक्षण अधिनियम 1993 के अंतर्गत किया गया।</p>"
+  },
+  {
+    "sr_no": 25,
+    "question": "<p> <b>(Statement Based) Consider the following statements regarding the Council of Ministers in Uttar Pradesh / </b>उत्तर प्रदेश की मंत्रिपरिषद के संबंध में निम्न कथनों पर विचार कीजिए<b>:<br/> 1. It is collectively responsible to the Vidhan Sabha. / </b>यह विधानसभा के प्रति सामूहिक रूप से उत्तरदायी होती है।<b><br/> 2. Ministers are appointed by the Governor on the advice of the Chief Minister. / </b>मंत्रियों की नियुक्ति मुख्यमंत्री की सलाह पर राज्यपाल करता है।<b><br/> 3. Deputy Ministers are part of the Council of Ministers. / </b>उपमंत्री मंत्रिपरिषद का हिस्सा होते हैं।<b><br/> Which of the above statements are correct? / </b>उपरोक्त में से कौन<b>-</b>से कथन सही हैं<b>?</b></p>",
+    "option1": "<p> 1 and 2 only</p>",
+    "option2": "<p> 2 and 3 only</p>",
+    "option3": "<p> 1 and 3 only</p>",
+    "option4": "<p> 1, 2 and 3</p>",
+    "answer": "4",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The Council of Ministers is collectively responsible to the Vidhan Sabha, ministers are appointed by the Governor on CM’s advice and Deputy Ministers are included / मंत्रिपरिषद विधानसभा के प्रति सामूहिक रूप से उत्तरदायी होती है, मंत्रियों की नियुक्ति मुख्यमंत्री की सलाह पर होती है और उपमंत्री भी इसमें शामिल होते हैं।</p>"
+  },
+  {
+    "sr_no": 26,
+    "question": "<p> <b>Which Article deals with the composition of the State Legislative Assembly? / </b>राज्य विधानसभा की संरचना किस अनुच्छेद में वर्णित है<b>?</b></p>",
+    "option1": "<p> Article 168</p>",
+    "option2": "<p> Article 169</p>",
+    "option3": "<p> Article 170</p>",
+    "option4": "<p> Article 171</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The composition of the State Legislative Assembly is mentioned under Article 170 / राज्य विधानसभा की संरचना का वर्णन अनुच्छेद 170 में किया गया है।</p>"
+  },
+  {
+    "sr_no": 27,
+    "question": "<p> <b>How many seats are reserved for Scheduled Castes in the Uttar Pradesh Legislative Assembly? / </b>उत्तर प्रदेश विधानसभा में अनुसूचित जाति के लिए कितनी सीटें आरक्षित हैं<b>?</b></p>",
+    "option1": "<p> 82</p>",
+    "option2": "<p> 83</p>",
+    "option3": "<p> 84</p>",
+    "option4": "<p> 85</p>",
+    "answer": "3",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> There are 84 seats reserved for Scheduled Castes in the Uttar Pradesh Legislative Assembly / उत्तर प्रदेश विधानसभा में अनुसूचित जाति के लिए 84 सीटें आरक्षित हैं।</p>"
+  },
+  {
+    "sr_no": 28,
+    "question": "<p> <b>Who was the first Chairman of the Uttar Pradesh Legislative Council after Independence? / </b>स्वतंत्रता के बाद उत्तर प्रदेश विधान परिषद के प्रथम सभापति कौन थे<b>?</b></p>",
+    "option1": "<p> Atmaram Govind Kher</p>",
+    "option2": "<p> Chandra Bhal</p>",
+    "option3": "<p> Sampurnanand</p>",
+    "option4": "<p> Govind Ballabh Pant</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> Chandra Bhal became the first Chairman of the Uttar Pradesh Legislative Council after Independence / स्वतंत्रता के बाद उत्तर प्रदेश विधान परिषद के प्रथम सभापति चंद्र भाल थे।</p>"
+  },
+  {
+    "sr_no": 29,
+    "question": "<p> <b>When was Uttarakhand separated from Uttar Pradesh? / </b>उत्तराखंड को उत्तर प्रदेश से कब अलग किया गया<b>?</b></p>",
+    "option1": "<p> 1 November 1956</p>",
+    "option2": "<p> 9 November 2000</p>",
+    "option3": "<p> 26 January 1950</p>",
+    "option4": "<p> 1 April 1937</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> Uttarakhand was carved out of Uttar Pradesh on 9 November 2000 / 9 नवम्बर 2000 को उत्तराखंड को उत्तर प्रदेश से अलग राज्य बनाया गया।</p>"
+  },
+  {
+    "sr_no": 30,
+    "question": "<p> <b>Consider the following statements regarding the Vidhan Sabha of Uttar Pradesh / </b>उत्तर प्रदेश विधानसभा के संबंध में निम्न कथनों पर विचार कीजिए <b>by:<br/> 1. It is a permanent House. / </b>यह एक स्थायी सदन है।<b><br/> 2. It can be dissolved by the Governor. / </b>इसे राज्यपाल द्वारा भंग किया जा सकता है।<b><br/> 3. Its normal term is five years. / </b>इसका सामान्य कार्यकाल पाँच वर्ष का होता है।<b><br/> Which of the above statements are correct? / </b>उपरोक्त में से कौन<b>-</b>से कथन सही हैं<b>?</b></p>",
+    "option1": "<p> 1 and 2 only</p>",
+    "option2": "<p> 2 and 3 only</p>",
+    "option3": "<p> 1 and 3 only</p>",
+    "option4": "<p> 1, 2 and 3</p>",
+    "answer": "2",
+    "negative_marking": "0",
+    "positive_marking": "2",
+    "solution_text": "<p> The Vidhan Sabha is not a permanent House, it can be dissolved by the Governor and its normal term is five years / विधानसभा स्थायी सदन नहीं है, इसे राज्यपाल भंग कर सकता है और इसका सामान्य कार्यकाल पाँच वर्ष होता है।</p>"
+  }
+];
+
+let currentQuestion = 0;
+let answers = {};
+let bookmarks = new Set();
+let timerSeconds = 0;
+let timerInterval = null;
+let isPaletteOpen = false;
+
+// Use a namespaced storage key so different quizzes/pages don't collide
+const STORAGE_KEY = 'quizState_' + (document.title || 'default');
+
+function isImageURL(str) {
+  return str && (str.startsWith('http://') || str.startsWith('https://'));
+}
+
+function createOptionContent(optionText) {
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'option-content';
+    
+    if (isImageURL(optionText)) {
+        const img = document.createElement('img');
+        img.src = optionText;
+        img.className = 'option-image';
+        img.alt = 'Option image';
+        img.loading = 'lazy';
+        img.onerror = function() {
+            this.style.display = 'none';
+            const errorText = document.createTextNode('Image failed to load');
+            contentDiv.appendChild(errorText);
+        };
+        contentDiv.appendChild(img);
+    } else {
+        contentDiv.innerHTML = optionText;  // FIXED: Use innerHTML
+    }
+    
+    return contentDiv;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  initQuiz();
+  initEventListeners();
+  loadFromLocalStorage();
+  startTimer();
+  createPalette();
+  preventDoubleTapZoom();
+});
+
+function preventDoubleTapZoom() {
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', (event) => {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+      event.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, { passive: false });
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem('quizTheme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateThemeIcon();
+}
+
+function updateThemeIcon() {
+  const theme = document.documentElement.getAttribute('data-theme');
+  const themeBtn = document.getElementById('themeToggle');
+  if (themeBtn) {
+    themeBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  }
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('quizTheme', newTheme);
+  updateThemeIcon();
+}
+
+function initQuiz() {
+  loadQuestion(currentQuestion);
+  updateMarkingInfo();
+}
+
+function initEventListeners() {
+  const themeBtn = document.getElementById('themeToggle');
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  
+  if (themeBtn) {
+    themeBtn.addEventListener('click', toggleTheme);
+    themeBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      toggleTheme();
+    });
+  }
+  
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+    fullscreenBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      toggleFullscreen();
+    });
+  }
+  
+  addButtonListener('prevBtn', prevQuestion);
+  addButtonListener('nextBtn', nextQuestion);
+  addButtonListener('clearBtn', clearAnswer);
+  addButtonListener('submitBtn', confirmSubmit);
+  addButtonListener('bookmarkBtn', toggleBookmark);
+  
+  addButtonListener('paletteFab', togglePalette);
+  addButtonListener('paletteClose', closePalette);
+  
+  const overlay = document.getElementById('paletteOverlay');
+  if (overlay) {
+    overlay.addEventListener('click', closePalette);
+    overlay.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      closePalette();
+    });
+  }
+  
+  const searchInput = document.getElementById('paletteSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', handleSearch);
+    searchInput.addEventListener('change', jumpToQuestion);
+  }
+  
+  document.addEventListener('keydown', handleKeyPress);
+  
+  setInterval(saveToLocalStorage, 5000);
+  
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      updatePalette();
+    }
+  });
+}
+
+function addButtonListener(id, handler) {
+  const btn = document.getElementById(id);
+  if (btn) {
+    btn.addEventListener('click', handler);
+    btn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      handler();
+    });
+  }
+}
+
+function jumpToQuestion(e) {
+  const questionNum = parseInt(e.target.value);
+  if (questionNum >= 1 && questionNum <= questions.length) {
+    goToQuestion(questionNum - 1);
+    closePalette();
+    e.target.value = '';
+  }
+}
+
+function togglePalette() {
+  isPaletteOpen = !isPaletteOpen;
+  const palette = document.getElementById('questionPalette');
+  const overlay = document.getElementById('paletteOverlay');
+  const fab = document.getElementById('paletteFab');
+  
+  if (isPaletteOpen) {
+    palette.classList.add('active');
+    overlay.classList.add('active');
+    fab.classList.add('active');
+    fab.innerHTML = '✕<span class="badge" id="answeredBadge">' + Object.keys(answers).length + '</span>';
+    document.body.classList.add('palette-open');
+  } else {
+    closePalette();
+  }
+}
+
+function closePalette() {
+  isPaletteOpen = false;
+  const palette = document.getElementById('questionPalette');
+  const overlay = document.getElementById('paletteOverlay');
+  const fab = document.getElementById('paletteFab');
+  
+  if (palette) palette.classList.remove('active');
+  if (overlay) overlay.classList.remove('active');
+  if (fab) {
+    fab.classList.remove('active');
+    fab.innerHTML = '📋<span class="badge" id="answeredBadge">' + Object.keys(answers).length + '</span>';
+  }
+  document.body.classList.remove('palette-open');
+}
+
+function handleSearch(e) {
+  const searchTerm = e.target.value.toLowerCase();
+  if (!searchTerm) {
+    document.querySelectorAll('.palette-btn').forEach(btn => {
+      btn.style.display = '';
+    });
+    return;
+  }
+  
+  const buttons = document.querySelectorAll('.palette-btn');
+  buttons.forEach((btn, index) => {
+    const questionNum = (index + 1).toString();
+    if (questionNum.includes(searchTerm)) {
+      btn.style.display = '';
+    } else {
+      btn.style.display = 'none';
+    }
+  });
+}
+
+function handleKeyPress(e) {
+  if (document.getElementById('resultSection').classList.contains('hidden')) {
+    if (e.key === 'Escape' && isPaletteOpen) {
+      closePalette();
+    } else if (!isPaletteOpen && e.target.tagName !== 'INPUT') {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevQuestion();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        nextQuestion();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        nextQuestion();
+      } else if (e.key === 'b' || e.key === 'B') {
+        e.preventDefault();
+        toggleBookmark();
+      } else if (e.key === 'c' || e.key === 'C') {
+        e.preventDefault();
+        clearAnswer();
+      } else if (e.key === 'p' || e.key === 'P') {
+        e.preventDefault();
+        togglePalette();
+      } else if (e.key >= '1' && e.key <= '4') {
+        e.preventDefault();
+        selectOption(parseInt(e.key));
+      }
+    }
+  }
+}
+
+function selectOption(optionNum) {
+  const q = questions[currentQuestion];
+  const radio = document.querySelector(`input[name="q${q.sr_no}"][value="${optionNum}"]`);
+  if (radio) {
+    radio.checked = true;
+    const label = radio.closest('.option-label');
+    if (label) {
+      document.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+      label.classList.add('selected');
+      saveAnswer();
+    }
+  }
+}
+
+function toggleFullscreen() {
+  try {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.log('Fullscreen error:', err);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  } catch (err) {
+    console.log('Fullscreen not supported');
+  }
+}
+
+function startTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
+  timerInterval = setInterval(() => {
+    timerSeconds++;
+    updateTimer();
+    if (timerSeconds > 600) {
+      const timer = document.getElementById('timer');
+      if (timer) timer.classList.add('warning');
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const minutes = Math.floor(timerSeconds / 60);
+  const seconds = timerSeconds % 60;
+  const timer = document.getElementById('timer');
+  if (timer) {
+    timer.textContent = 
+      `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+}
+
+function createPalette() {
+  const grid = document.getElementById('paletteGrid');
+  if (!grid) return;
+  
+  grid.innerHTML = '';
+  questions.forEach((q, index) => {
+    const btn = document.createElement('button');
+    btn.textContent = index + 1;
+    btn.className = 'palette-btn';
+    btn.setAttribute('aria-label', `Go to question ${index + 1}`);
+    btn.setAttribute('type', 'button');
+    
+    btn.addEventListener('click', () => {
+      goToQuestion(index);
+      closePalette();
+    });
+    
+    btn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      goToQuestion(index);
+      closePalette();
+    });
+    
+    grid.appendChild(btn);
+  });
+  updatePalette();
+}
+
+function updatePalette() {
+  const buttons = document.querySelectorAll('.palette-btn');
+  buttons.forEach((btn, index) => {
+    btn.className = 'palette-btn';
+    if (index === currentQuestion) btn.classList.add('current');
+    if (answers[questions[index].sr_no]) btn.classList.add('answered');
+    if (bookmarks.has(questions[index].sr_no)) btn.classList.add('bookmarked');
+  });
+  
+  updatePaletteStats();
+}
+
+function updatePaletteStats() {
+  const answered = Object.keys(answers).length;
+  const unanswered = questions.length - answered;
+  const bookmarkedCount = bookmarks.size;
+  
+  const answeredEl = document.getElementById('paletteAnswered');
+  const unansweredEl = document.getElementById('paletteUnanswered');
+  const bookmarkedEl = document.getElementById('paletteBookmarked');
+  
+  if (answeredEl) answeredEl.textContent = answered;
+  if (unansweredEl) unansweredEl.textContent = unanswered;
+  if (bookmarkedEl) bookmarkedEl.textContent = bookmarkedCount;
+  
+  const badge = document.querySelector('.palette-fab .badge');
+  if (badge) badge.textContent = answered;
+}
+
+function goToQuestion(index) {
+  if (index < 0 || index >= questions.length) return;
+  saveAnswer();
+  currentQuestion = index;
+  loadQuestion(currentQuestion);
+  
+  const questionSection = document.getElementById('questionSection');
+  if (questionSection) {
+    setTimeout(() => {
+      questionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+}
+
+function loadQuestion(index) {
+  const q = questions[index];
+  
+  const questionNumber = document.getElementById('questionNumber');
+  const questionText = document.getElementById('questionText');
+  
+  if (questionNumber) {
+    questionNumber.textContent = `Question ${index + 1} of ${questions.length}`;
+  }
+  
+  if (questionText) {
+    // Render question as image if it's a URL, otherwise as text
+    questionText.innerHTML = '';
+    if (isImageURL(q.question)) {
+      const img = document.createElement('img');
+      img.src = q.question;
+      img.className = 'question-image';
+      img.alt = 'Question image';
+      img.loading = 'lazy';
+      img.onerror = function() {
+        this.style.display = 'none';
+        questionText.innerHTML = q.question;
+      };
+      questionText.appendChild(img);
+    } else {
+      questionText.innerHTML = q.question;
+    }
+  }
+  
+  const container = document.getElementById('optionsContainer');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  for (let i = 1; i <= 4; i++) {
+    const label = document.createElement('label');
+    label.className = 'option-label';
+    if (answers[q.sr_no] == i) label.classList.add('selected');
+    
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = `q${q.sr_no}`;
+    radio.value = i;
+    radio.checked = answers[q.sr_no] == i;
+    
+    const changeHandler = () => {
+      document.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+      label.classList.add('selected');
+      saveAnswer();
+    };
+    
+    radio.addEventListener('change', changeHandler);
+    label.addEventListener('click', (e) => {
+      if (e.target !== radio) {
+        radio.checked = true;
+        changeHandler();
+      }
+    });
+    
+    label.appendChild(radio);
+    
+    const optionContent = createOptionContent(q[`option${i}`]);
+    label.appendChild(optionContent);
+    
+    container.appendChild(label);
+  }
+  
+  const bookmarkBtn = document.getElementById('bookmarkBtn');
+  if (bookmarkBtn) {
+    if (bookmarks.has(q.sr_no)) {
+      bookmarkBtn.classList.add('active');
+    } else {
+      bookmarkBtn.classList.remove('active');
+    }
+  }
+  
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  
+  if (prevBtn) prevBtn.disabled = index === 0;
+  
+  if (index === questions.length - 1) {
+    if (nextBtn) nextBtn.classList.add('hidden');
+    if (submitBtn) submitBtn.classList.remove('hidden');
+  } else {
+    if (nextBtn) nextBtn.classList.remove('hidden');
+    if (submitBtn) submitBtn.classList.add('hidden');
+  }
+  
+  updateProgress();
+  updatePalette();
+}
+
+function updateMarkingInfo() {
+  const q = questions[0];
+  const markingInfo = document.getElementById('markingInfo');
+  if (markingInfo) {
+    markingInfo.textContent = `Marking: +${q.positive_marking}, -${q.negative_marking}`;
+  }
+}
+
+// UPDATED: Progress bar now shows current question number
+function updateProgress() {
+  const attempted = Object.keys(answers).length;
+  const currentProgress = ((currentQuestion + 1) / questions.length) * 100;
+  
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  const attemptedText = document.getElementById('attemptedText');
+  
+  if (progressBar) progressBar.style.width = `${currentProgress}%`;
+  if (progressText) progressText.textContent = `${currentQuestion + 1}/${questions.length}`;
+  if (attemptedText) attemptedText.textContent = attempted;
+}
+
+function saveAnswer() {
+  const q = questions[currentQuestion];
+  const selected = document.querySelector(`input[name="q${q.sr_no}"]:checked`);
+  
+  if (selected) {
+    answers[q.sr_no] = selected.value;
+  }
+  
+  updateProgress();
+  updatePalette();
+  saveToLocalStorage();
+}
+
+function clearAnswer() {
+  const q = questions[currentQuestion];
+  delete answers[q.sr_no];
+  
+  const selected = document.querySelector(`input[name="q${q.sr_no}"]:checked`);
+  if (selected) selected.checked = false;
+  
+  document.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+  
+  updateProgress();
+  updatePalette();
+  saveToLocalStorage();
+}
+
+function toggleBookmark() {
+  const q = questions[currentQuestion];
+  const btn = document.getElementById('bookmarkBtn');
+  
+  if (bookmarks.has(q.sr_no)) {
+    bookmarks.delete(q.sr_no);
+    if (btn) btn.classList.remove('active');
+  } else {
+    bookmarks.add(q.sr_no);
+    if (btn) btn.classList.add('active');
+  }
+  
+  updatePalette();
+  saveToLocalStorage();
+}
+
+function nextQuestion() {
+  saveAnswer();
+  if (currentQuestion < questions.length - 1) {
+    currentQuestion++;
+    loadQuestion(currentQuestion);
+  }
+}
+
+function prevQuestion() {
+  saveAnswer();
+  if (currentQuestion > 0) {
+    currentQuestion--;
+    loadQuestion(currentQuestion);
+  }
+}
+
+function confirmSubmit() {
+  const unattempted = questions.length - Object.keys(answers).length;
+  let message = 'Are you sure you want to submit the quiz?';
+  
+  if (unattempted > 0) {
+    message += `\n\nYou have ${unattempted} unanswered question(s).`;
+  }
+  
+  if (confirm(message)) {
+    submitQuiz();
+  }
+}
+
+function submitQuiz() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  saveAnswer();
+  closePalette();
+  
+  let correct = 0, wrong = 0, unattempted = 0, score = 0;
+  
+  questions.forEach(q => {
+    const userAns = answers[q.sr_no];
+    const posMark = parseFloat(q.positive_marking) || 0;
+    const negMark = parseFloat(q.negative_marking) || 0;
+    
+    if (!userAns) {
+      unattempted++;
+    } else if (userAns == q.answer) {
+      correct++;
+      score += posMark;
+    } else {
+      wrong++;
+      score -= negMark;
+    }
+  });
+  
+  displayResults(correct, wrong, unattempted, score);
+  
+  const fab = document.getElementById('paletteFab');
+  const nav = document.getElementById('navigation');
+  if (fab) fab.style.display = 'none';
+  if (nav) nav.style.display = 'none';
+  
+  document.body.style.paddingBottom = '20px';
+  
+  clearLocalStorage();
+}
+
+function displayResults(correct, wrong, unattempted, score) {
+  const totalQuestions = questions.length;
+  const percentage = ((correct / totalQuestions) * 100).toFixed(1);
+  const timerEl = document.getElementById('timer');
+  const timeText = timerEl ? timerEl.textContent : '00:00';
+  
+  let html = `
+    <div class="score-card">
+      <h2>${score}/${totalQuestions}</h2>
+      <p>Your Score: ${percentage}%</p>
+      <p>Time Taken: ${timeText}</p>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card correct">
+        <h3>${correct}</h3>
+        <p>Correct</p>
+      </div>
+      <div class="stat-card wrong">
+        <h3>${wrong}</h3>
+        <p>Wrong</p>
+      </div>
+      <div class="stat-card unattempted">
+        <h3>${unattempted}</h3>
+        <p>Unattempted</p>
+      </div>
+      <div class="stat-card">
+        <h3>${totalQuestions}</h3>
+        <p>Total</p>
+      </div>
+    </div>
+  `;
+  
+  questions.forEach(q => {
+    const userAns = answers[q.sr_no];
+    const questionHeader = isImageURL(q.question)
+      ? `<h4>Q${q.sr_no}:</h4><img src="${q.question}" class="question-image" alt="Question ${q.sr_no}">`
+      : `<h4>Q${q.sr_no}: ${q.question}</h4>`;
+    html += `<div class="question-review">${questionHeader}`;
+    
+    for (let i = 1; i <= 4; i++) {
+      const isCorrect = i.toString() === q.answer;
+      const isUserAnswer = userAns == i.toString();
+      
+      let className = 'review-option';
+      if (isCorrect) className += ' correct';
+      if (isUserAnswer && !isCorrect) className += ' wrong';
+      if (isUserAnswer) className += ' user-selected';
+      
+      const optionValue = q[`option${i}`];
+      
+      if (isImageURL(optionValue)) {
+        html += `<div class="${className}">
+          ${isCorrect ? '✓ ' : ''}${isUserAnswer ? '➤ ' : ''} 
+          <img src="${optionValue}" class="option-image" alt="Option ${i}">
+        </div>`;
+      } else {
+        html += `<div class="${className}">
+          ${isCorrect ? '✓ ' : ''}${isUserAnswer ? '➤ ' : ''}${optionValue}
+        </div>`;
+      }
+    }
+    
+    if (q.solution_text && q.solution_text.trim() !== '') {
+      const solutionContent = isImageURL(q.solution_text)
+        ? `<img src="${q.solution_text}" class="solution-image" alt="Solution">`
+        : q.solution_text;
+      html += `<div class="solution-section">
+        <div class="solution-label">📝 Solution:</div>
+        <div class="solution-content">${solutionContent}</div>
+      </div>`;
+    }
+    
+    html += `</div>`; // Close question-review div
+});
+  
+  html += `
+    <div class="action-buttons">
+      <button class="action-btn restart" onclick="restartQuiz()">Restart Quiz</button>
+      <button class="action-btn download" onclick="downloadResults()">Download Results</button>
+      <button class="action-btn print" onclick="window.print()">Print Results</button>
+    </div>
+  `;
+  
+  const resultSection = document.getElementById('resultSection');
+  const questionSection = document.getElementById('questionSection');
+  const progressSection = document.querySelector('.progress-section');
+  
+  if (resultSection) {
+    resultSection.innerHTML = html;
+    resultSection.classList.remove('hidden');
+  }
+  if (questionSection) questionSection.classList.add('hidden');
+  if (progressSection) progressSection.classList.add('hidden');
+  
+  const quizContainer = document.getElementById('quizContainer');
+  if (quizContainer) {
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  }
+}
+
+function restartQuiz() {
+  if (confirm('Are you sure you want to restart? All progress will be lost.')) {
+    currentQuestion = 0;
+    answers = {};
+    bookmarks.clear();
+    timerSeconds = 0;
+    
+    const resultSection = document.getElementById('resultSection');
+    const questionSection = document.getElementById('questionSection');
+    const progressSection = document.querySelector('.progress-section');
+    const fab = document.getElementById('paletteFab');
+    const nav = document.getElementById('navigation');
+    
+    if (resultSection) {
+      resultSection.classList.add('hidden');
+      resultSection.innerHTML = '';
+    }
+    if (questionSection) questionSection.classList.remove('hidden');
+    if (progressSection) progressSection.classList.remove('hidden');
+    if (fab) fab.style.display = 'flex';
+    if (nav) nav.style.display = 'grid';
+    
+    document.body.style.paddingBottom = 'var(--nav-height)';
+    
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+    startTimer();
+    
+    loadQuestion(currentQuestion);
+    createPalette();
+  }
+}
+
+function downloadResults() {
+  const resultSection = document.getElementById('resultSection');
+  if (!resultSection) return;
+  
+  const resultHTML = resultSection.innerHTML;
+  const fullHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Results - General Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; max-width: 900px; margin: 0 auto; }
+    .score-card { background: linear-gradient(135deg, #007bff, #28a745); color: white; padding: 30px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
+    .score-card h2 { font-size: 48px; margin-bottom: 10px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
+    .stat-card { background: white; padding: 20px; border-radius: 10px; text-align: center; border: 2px solid #ddd; }
+    .stat-card h3 { font-size: 32px; margin-bottom: 8px; }
+    .stat-card.correct h3 { color: #28a745; }
+    .stat-card.wrong h3 { color: #dc3545; }
+    .stat-card.unattempted h3 { color: #6c757d; }
+    .question-review { background: white; border: 2px solid #ddd; border-radius: 10px; padding: 20px; margin-bottom: 15px; }
+    .question-review h4 { margin-bottom: 15px; font-size: 16px; line-height: 1.6; }
+    .review-option { padding: 10px 15px; margin: 8px 0; border-radius: 8px; border: 2px solid #ddd; display: flex; align-items: center; gap: 10px; }
+    .option-image { max-width: 150px; max-height: 100px; border-radius: 8px; }
+    .review-option.correct { background: #d4edda; border-color: #28a745; color: #155724; }
+    .review-option.wrong { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+    .review-option.user-selected { border-width: 3px; font-weight: bold; }
+    @media print { body { background: white; } }
+    @media (max-width: 600px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <h1 style="text-align: center; color: #007bff;">General Quiz - Quiz Results</h1>
+  <p style="text-align: center; color: #666; margin-bottom: 30px;">Generated on: ${new Date().toLocaleString()}</p>
+  ${resultHTML.replace(/<div class="action-buttons">[\s\S]*?<\/div>/, '')}
+</body>
+</html>
+  `;
+  
+  try {
+    const blob = new Blob([fullHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Quiz_Results_${new Date().getTime()}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert('Download failed. Please try using the Print option instead.');
+    console.error('Download error:', err);
+  }
+}
+
+function saveToLocalStorage() {
+  try {
+    const state = {
+      currentQuestion,
+      answers,
+      bookmarks: Array.from(bookmarks),
+      timerSeconds,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (err) {
+    console.error('Save error:', err);
+  }
+}
+
+function loadFromLocalStorage() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const state = JSON.parse(saved);
+      const hasProgress = (state && (
+        (state.currentQuestion && state.currentQuestion > 0) ||
+        (state.answers && Object.keys(state.answers).length > 0) ||
+        (state.timerSeconds && state.timerSeconds > 0)
+      ));
+      if (hasProgress && (Date.now() - state.timestamp < 24 * 60 * 60 * 1000)) {
+        if (confirm('Resume previous quiz session?')) {
+          currentQuestion = state.currentQuestion || 0;
+          answers = state.answers || {};
+          bookmarks = new Set(state.bookmarks || []);
+          timerSeconds = state.timerSeconds || 0;
+          updateTimer();
+          loadQuestion(currentQuestion);
+        }
+      } else {
+        clearLocalStorage();
+      }
+    }
+  } catch (err) {
+    console.error('Load error:', err);
+    clearLocalStorage();
+  }
+}
+
+function clearLocalStorage() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (err) {
+    console.error('Clear storage error:', err);
+  }
+}
+
+window.addEventListener('beforeunload', (e) => {
+  const resultSection = document.getElementById('resultSection');
+  if (resultSection && !resultSection.classList.contains('hidden')) {
+    return;
+  }
+  e.preventDefault();
+  e.returnValue = '';
+});
+
+window.addEventListener('unload', () => {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
+});
+</script>
+</body>
+</html>
